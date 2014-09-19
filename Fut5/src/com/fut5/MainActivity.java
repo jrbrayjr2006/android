@@ -1,20 +1,23 @@
 package com.fut5;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends FragmentActivity implements LoginFragment.OnLoginButtonClickedListener {
 	
 	private DrawerLayout mDrawerLayout;
 	private String[] mNavigationArray;
 	private ListView mNavigationList;
 	private FragmentManager fragmentManager;
+	Fragment loginFragment;
+	Fragment bookingFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +25,14 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         
         mDrawerLayout = (DrawerLayout)findViewById(R.layout.booking_drawer_fragment);
+        
+        fragmentManager = getSupportFragmentManager();
+        loginFragment = fragmentManager.findFragmentById(R.id.login_fragment);
+        if(loginFragment == null) {
+        	loginFragment = new LoginFragment();
+        	fragmentManager.beginTransaction().add(R.id.fragmentContainer,loginFragment).commit();
+        }
+        setTitle("Fut5");
     }
 
 
@@ -43,4 +54,17 @@ public class MainActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    /**
+     * Replace one fragment with another
+     */
+	@Override
+	public void onLoginButtonClicked() {
+		if(fragmentManager == null) {
+			fragmentManager = getSupportFragmentManager();
+		}
+		bookingFragment = fragmentManager.findFragmentById(R.id.booking_fragment);
+		bookingFragment = new BookingFragment();
+		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, bookingFragment).commit();
+	}
 }
