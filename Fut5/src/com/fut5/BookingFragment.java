@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.fut5.adapter.BookingListAdapter;
+
 /**
  * @author james_r_bray
  *
@@ -17,6 +19,8 @@ import android.widget.ListView;
 public class BookingFragment extends Fragment {
 	
 	private ListView mBookingListView;
+	
+	private BookingListAdapter mBookingListAdapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

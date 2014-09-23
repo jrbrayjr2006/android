@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="orange_button">#f05a21</color>
+    <color name="silver">#c0c0c0</color>
     
 </resources>
