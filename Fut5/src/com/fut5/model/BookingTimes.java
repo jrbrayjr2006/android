@@ -35,10 +35,15 @@ public class BookingTimes {
 	}
 
 	public ArrayList<Booking> getmBookings() {
-		String[] times = {"12:00 PM"};
-		Booking b = new Booking();
-		b.setBookingTime("12:00 PM");
-		mBookings.add(new Booking());
+		//TODO remove this development code before release
+		String[] times = {"12:00 PM", "1:00 PM", "2:00 PM"};
+		int i = 0;
+		while(i < times.length) {
+			Booking b = new Booking();
+			b.setBookingTime(times[i]);
+			mBookings.add(b);
+			i++;
+		}
 		return mBookings;
 	}
 

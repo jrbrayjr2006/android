@@ -3,6 +3,8 @@
  */
 package com.fut5.model;
 
+import java.util.Date;
+
 /**
  * @author james_r_bray
  *
@@ -10,6 +12,7 @@ package com.fut5.model;
 public class Booking {
 	
 	String bookingTime;
+	Date dateTime;
 	boolean available;
 
 	/**
@@ -33,6 +36,14 @@ public class Booking {
 
 	public void setAvailable(boolean available) {
 		this.available = available;
+	}
+
+	public Date getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(Date dateTime) {
+		this.dateTime = dateTime;
 	}
 
 }

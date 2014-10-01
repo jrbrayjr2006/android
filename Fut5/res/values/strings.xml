@@ -12,6 +12,7 @@
     <string name="email_address">Email</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="booking">Booking</string>
+    <string name="available_times">Available Times</string>
     <string name="url_login">http://</string>
     <string name="url_register">http://</string>
 

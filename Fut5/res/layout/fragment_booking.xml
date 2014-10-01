@@ -5,24 +5,28 @@
     android:layout_height="match_parent"
     android:background="@drawable/core_background"
     android:orientation="vertical" >
-
+	<!-- 
     <TextView 
         android:id="@+id/dateEditText" 
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content" 
         android:ems="10" 
         android:textColor="@color/silver"
-        android:layout_gravity="center"
-        android:text="Sept 22, 2014"/>
+        android:gravity="center"
+        android:text="Oct 1, 2014"/>
+    -->
     
     <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
+        android:id="@+id/android:empty"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/booking" />
+        android:textColor="@color/orange_button"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:text="@string/available_times" />
 
     <ListView
-        android:id="@+id/bookingListView"
+        android:id="@+id/android:list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </ListView>

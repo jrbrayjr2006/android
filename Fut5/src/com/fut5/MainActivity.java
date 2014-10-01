@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 
-public class MainActivity extends FragmentActivity implements LoginFragment.OnLoginButtonClickedListener {
+public class MainActivity extends FragmentActivity implements LoginFragment.OnLoginButtonClickedListener, CoreBookingFragment.BookingAppCallbackListener {
 	
 	private DrawerLayout mDrawerLayout;
 	private String[] mNavigationArray;
