@@ -18,6 +18,7 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
 	private FragmentManager fragmentManager;
 	Fragment loginFragment;
 	Fragment bookingFragment;
+	Fragment myBookingsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,5 +67,18 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
 		bookingFragment = fragmentManager.findFragmentById(R.id.booking_fragment);
 		bookingFragment = new BookingFragment();
 		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, bookingFragment).commit();
+	}
+
+
+	@Override
+	public void onBookingItemClicked() {
+		// TODO Auto-generated method stub
+		if(fragmentManager == null) {
+			fragmentManager = getSupportFragmentManager();
+		}
+		
+		myBookingsFragment = new MyBookingsFragment();
+		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, myBookingsFragment).commit();
+		setTitle("My Bookings");
 	}
 }

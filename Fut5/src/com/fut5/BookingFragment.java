@@ -4,12 +4,14 @@
 package com.fut5;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.fut5.adapter.BookingListAdapter;
 
@@ -25,7 +26,7 @@ import com.fut5.adapter.BookingListAdapter;
  * @author james_r_bray
  *
  */
-public class BookingFragment extends Fragment {
+public class BookingFragment extends CoreBookingFragment {
 	
 	private ListView mBookingListView;
 	
@@ -38,6 +39,8 @@ public class BookingFragment extends Fragment {
 	private String[] bookingTimeArray = {"1:00 PM","2:00 PM","3:00 PM","5:00 PM","6:00 PM"};
 	
 	static final String[] PROJECTION = new String[] {};
+	
+	BookingAppCallbackListener mCallback;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,7 @@ public class BookingFragment extends Fragment {
 		//setListAdapter(mAdapter);
 		mArrayAdapter = new ArrayAdapter<String>(getActivity(),layoutID,bookingTimeArray);
 		mBookingListView = (ListView)v.findViewById(android.R.id.list);
-		bookingArrayList = new ArrayList<String>();
+		bookingArrayList = new ArrayList<String>(Arrays.asList(bookingTimeArray));
 		
 		mBookingListView.setAdapter(mArrayAdapter);
 		
@@ -68,7 +71,8 @@ public class BookingFragment extends Fragment {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				bookingArrayList.get(position);
-				Toast.makeText(getActivity(), "Time Selected...", Toast.LENGTH_SHORT);
+				mCallback.onBookingItemClicked();
+				//Toast.makeText(getActivity(), "Time Selected..." + position, Toast.LENGTH_SHORT).show();
 			}
 			
 		});
@@ -89,6 +93,16 @@ public class BookingFragment extends Fragment {
         // Swap the new cursor in.  (The framework will take care of closing the
         // old cursor once we return.)
         //TODO
+    }
+    
+    
+    public void onAttach(Activity activity) {
+    	super.onAttach(activity);
+    	try {
+    		mCallback = (BookingAppCallbackListener)activity;
+    	} catch(ClassCastException cce) {
+    		Log.e("ERROR","Class cast " + cce.getMessage());
+    	}
     }
 
 
