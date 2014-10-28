@@ -3,6 +3,7 @@
 
     <string name="app_name">Fut5</string>
     <string name="action_settings">Settings</string>
+    <string name="action_my_bookings">My Bookings</string>
     <string name="login">Log In</string>
     <string name="create_account_btn_txt">Create Account</string>
     <string name="first_name">First Name</string>
@@ -15,5 +16,6 @@
     <string name="available_times">Available Times</string>
     <string name="url_login">http://</string>
     <string name="url_register">http://</string>
+    <string name="no_bookings">You don\'t have any bookings at this time!</string>
 
 </resources>
