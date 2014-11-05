@@ -33,7 +33,7 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
         	loginFragment = new LoginFragment();
         	fragmentManager.beginTransaction().add(R.id.fragmentContainer,loginFragment).commit();
         }
-        setTitle("Fut5");
+        setTitle(getResources().getString(R.string.app_name));
     }
 
 
@@ -52,6 +52,9 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
+        }
+        if (id == R.id.my_bookings) {
+        	goToMyBookings();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -73,12 +76,16 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
 	@Override
 	public void onBookingItemClicked() {
 		// TODO Auto-generated method stub
+		goToMyBookings();
+	}
+	
+	private void goToMyBookings() {
 		if(fragmentManager == null) {
 			fragmentManager = getSupportFragmentManager();
 		}
 		
 		myBookingsFragment = new MyBookingsFragment();
 		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, myBookingsFragment).commit();
-		setTitle("My Bookings");
+		setTitle(getResources().getString(R.string.action_my_bookings));
 	}
 }

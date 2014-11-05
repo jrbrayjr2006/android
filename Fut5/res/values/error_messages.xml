@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error">ERROR</string>
+    <string name="warning">WARNING</string>
+    <string name="error_authentication_failure">Login has failed.  The application cannot authenticate your credentials.</string>
+    <string name="error_missing_credentials">Your username or your password are missing, please try again.</string>
+</resources>

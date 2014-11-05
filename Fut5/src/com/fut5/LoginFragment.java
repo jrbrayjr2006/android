@@ -70,10 +70,20 @@ public class LoginFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				login(usernameEditText.getText().toString(),passwordEditText.getText().toString());
-                //TODO add logic to go beyond login if valid
-				Toast.makeText(getActivity(), "Logging In...", Toast.LENGTH_SHORT).show();
-				mCallback.onLoginButtonClicked();
+				String username = usernameEditText.getText().toString();
+				String password = passwordEditText.getText().toString();
+				if((username.length() == 0) || (password.length() == 0)) {
+					//bypass authentication if login credentials are missing
+					Toast.makeText(getActivity(), getResources().getString(R.string.error_missing_credentials), Toast.LENGTH_SHORT).show();
+				} else {
+					boolean result = login(usernameEditText.getText().toString(),passwordEditText.getText().toString());
+					if(result == true) {
+						Toast.makeText(getActivity(), "Logging In...", Toast.LENGTH_SHORT).show();
+						mCallback.onLoginButtonClicked();
+					} else {
+						Toast.makeText(getActivity(), getResources().getString(R.string.error_authentication_failure), Toast.LENGTH_SHORT).show();
+					}
+				}
 				
 			}
 			
@@ -103,10 +113,11 @@ public class LoginFragment extends Fragment {
      * @param passwd
      * @return
      */
-    public String login(String username, String password) {
-    	String result = null;
+    public boolean login(String username, String password) {
+    	boolean result = false;
     	networkHelper = new NetworkHelper();
-    	
+    	//TODO get rid of test code later
+    	result = true;
     	networkHelper.connectToNetwork(username, password);
     	
     	return result;
