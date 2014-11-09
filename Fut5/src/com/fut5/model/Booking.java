@@ -16,6 +16,7 @@ public class Booking {
 	String bookingTime;
 	Date dateTime;
 	boolean available;
+	int duration;
 
 	/**
 	 * 
@@ -46,6 +47,14 @@ public class Booking {
 
 	public void setDateTime(Date dateTime) {
 		this.dateTime = dateTime;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
 	}
 
 }

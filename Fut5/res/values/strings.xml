@@ -20,5 +20,10 @@
     <string name="url_login">http://</string>
     <string name="url_register">http://</string>
     <string name="no_bookings">You don\'t have any bookings at this time!</string>
+    <string name="booking_select_duration">Select Duration of Booking</string>
+    <string-array name="booking_times">
+        <item>1 Hour</item>
+        <item>2 Hours</item>
+    </string-array>
 
 </resources>
