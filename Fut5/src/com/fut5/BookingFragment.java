@@ -67,7 +67,7 @@ public class BookingFragment extends CoreBookingFragment {
 		bookingArray = populateDummyBookings();
 		mBookingListAdapter = new BookingListAdapter(getActivity(),bookingArray);
 		mBookingListView = (ListView)v.findViewById(android.R.id.list);
-		bookingArrayList = new ArrayList<String>(Arrays.asList(bookingTimeArray));
+		//bookingArrayList = new ArrayList<String>(Arrays.asList(bookingTimeArray));
 		
 		//mBookingListView.setAdapter(mArrayAdapter); //TODO to be removed
 		mBookingListView.setAdapter(mBookingListAdapter);
@@ -77,9 +77,9 @@ public class BookingFragment extends CoreBookingFragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// TODO Auto-generated method stub
-				bookingArrayList.get(position);
-				openBookingDialog();
+				Booking bookThis = bookingArray.get(position);
+				
+				openBookingDialog(bookThis);
 				//mCallback.onBookingItemClicked();
 				//Toast.makeText(getActivity(), "Time Selected..." + position, Toast.LENGTH_SHORT).show();
 			}
@@ -130,9 +130,9 @@ public class BookingFragment extends CoreBookingFragment {
     	return b;
     }
     
-    public void openBookingDialog() {
-    	DialogFragment dmBookingTimeSelection = new DialogFragment();
-    	dmBookingTimeSelection.show(getFragmentManager(), "Select Timne");
+    public void openBookingDialog(Booking _booking) {
+    	DialogFragment dmBookingTimeSelection = new TimeSelectionDialogFragment(_booking);
+    	dmBookingTimeSelection.show(getFragmentManager(), getResources().getString(R.string.booking_select_duration));
     	
     }
     
