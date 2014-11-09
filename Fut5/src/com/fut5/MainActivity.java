@@ -56,6 +56,9 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
         if (id == R.id.my_bookings) {
         	goToMyBookings();
         }
+        if(id == R.id.bookings) {
+        	goToBookings();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -87,5 +90,15 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
 		myBookingsFragment = new MyBookingsFragment();
 		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, myBookingsFragment).commit();
 		setTitle(getResources().getString(R.string.action_my_bookings));
+	}
+	
+	private void goToBookings() {
+		if(fragmentManager == null) {
+			fragmentManager = getSupportFragmentManager();
+		}
+		
+		myBookingsFragment = new BookingFragment();
+		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, myBookingsFragment).commit();
+		setTitle(getResources().getString(R.string.action_bookings));
 	}
 }

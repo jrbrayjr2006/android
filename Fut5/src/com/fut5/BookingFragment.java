@@ -5,10 +5,13 @@ package com.fut5;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -19,8 +22,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.fut5.adapter.BookingListAdapter;
+import com.fut5.model.Booking;
 
 /**
  * @author james_r_bray
@@ -36,7 +41,8 @@ public class BookingFragment extends CoreBookingFragment {
 	
 	private ArrayList<String> bookingArrayList;
 	
-	private String[] bookingTimeArray = {"1:00 PM","2:00 PM","3:00 PM","5:00 PM","6:00 PM"};
+	private String[] bookingTimeArray = {"10:00 AM", "11:00 AM","1:00 PM","2:00 PM","3:00 PM","5:00 PM","6:00 PM", "7:00 PM", "8:00 PM"};
+	private List<Booking> bookingArray = new ArrayList<Booking>();
 	
 	static final String[] PROJECTION = new String[] {};
 	
@@ -55,14 +61,16 @@ public class BookingFragment extends CoreBookingFragment {
 		//int[] toViews = {android.R.id.text1};
 		
 		int layoutID = android.R.layout.simple_list_item_1;
+		int bookingLayoutID = R.layout.booking_item;
 		
-		//mAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, bookingTimeArray, toViews, 0);
-		//setListAdapter(mAdapter);
-		mArrayAdapter = new ArrayAdapter<String>(getActivity(),layoutID,bookingTimeArray);
+		mArrayAdapter = new ArrayAdapter<String>(getActivity(),layoutID,bookingTimeArray); //TODO to be removed
+		bookingArray = populateDummyBookings();
+		mBookingListAdapter = new BookingListAdapter(getActivity(),bookingArray);
 		mBookingListView = (ListView)v.findViewById(android.R.id.list);
 		bookingArrayList = new ArrayList<String>(Arrays.asList(bookingTimeArray));
 		
-		mBookingListView.setAdapter(mArrayAdapter);
+		//mBookingListView.setAdapter(mArrayAdapter); //TODO to be removed
+		mBookingListView.setAdapter(mBookingListAdapter);
 		
 		mBookingListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -71,7 +79,8 @@ public class BookingFragment extends CoreBookingFragment {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				bookingArrayList.get(position);
-				mCallback.onBookingItemClicked();
+				openBookingDialog();
+				//mCallback.onBookingItemClicked();
 				//Toast.makeText(getActivity(), "Time Selected..." + position, Toast.LENGTH_SHORT).show();
 			}
 			
@@ -103,6 +112,55 @@ public class BookingFragment extends CoreBookingFragment {
     	} catch(ClassCastException cce) {
     		Log.e("ERROR","Class cast " + cce.getMessage());
     	}
+    }
+    
+    /**
+     * This method is for testing and demo purposes
+     * @return
+     */
+    private List<Booking> populateDummyBookings() {
+    	List<Booking> b = new ArrayList<Booking>();
+
+    	for(String bTime: bookingTimeArray) {
+    		Booking book = new Booking();
+    		book.setBookingTime(bTime);
+    		b.add(book);
+    	}
+    	
+    	return b;
+    }
+    
+    public void openBookingDialog() {
+    	DialogFragment dmBookingTimeSelection = new DialogFragment();
+    	dmBookingTimeSelection.show(getFragmentManager(), "Select Timne");
+    	
+    }
+    
+    
+    private static class BookingListInnerAdapter extends ArrayAdapter<Booking> {
+    	
+    	private final LayoutInflater mInflater;
+
+		public BookingListInnerAdapter(Context context, List<Booking> objects) {
+			super(context, -1, objects);
+			mInflater = LayoutInflater.from(context);
+			// TODO Auto-generated constructor stub
+		}
+		
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			final Booking booking = getItem(position);
+			
+			if(convertView == null) {
+				convertView = mInflater.inflate(R.layout.booking_item, parent, false);
+			}
+			
+			TextView tv = (TextView)convertView.findViewById(R.id.booking_time_item);
+			tv.setText(booking.getBookingTime());
+			
+			return convertView;
+		}
+    	
     }
 
 

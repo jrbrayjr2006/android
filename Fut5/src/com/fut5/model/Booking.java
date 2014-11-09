@@ -11,6 +11,8 @@ import java.util.Date;
  */
 public class Booking {
 	
+	protected final static String TAG = "Booking";
+	
 	String bookingTime;
 	Date dateTime;
 	boolean available;

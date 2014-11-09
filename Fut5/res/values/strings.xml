@@ -4,6 +4,7 @@
     <string name="app_name">Fut5</string>
     <string name="action_settings">Settings</string>
     <string name="action_my_bookings">My Bookings</string>
+    <string name="action_bookings">Bookings</string>
     <string name="logout">Log out</string>
     <string name="knockout_list">Knockout List</string>
     <string name="login">Log In</string>
