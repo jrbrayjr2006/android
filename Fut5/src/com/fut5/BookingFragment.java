@@ -4,16 +4,15 @@
 package com.fut5;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.app.DialogFragment;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;

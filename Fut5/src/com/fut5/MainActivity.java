@@ -1,16 +1,17 @@
 package com.fut5;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+import android.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
-public class MainActivity extends FragmentActivity implements LoginFragment.OnLoginButtonClickedListener, CoreBookingFragment.BookingAppCallbackListener {
+public class MainActivity extends Activity implements LoginFragment.OnLoginButtonClickedListener, CoreBookingFragment.BookingAppCallbackListener {
 	
 	private DrawerLayout mDrawerLayout;
 	private String[] mNavigationArray;
@@ -27,7 +28,7 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
         
         mDrawerLayout = (DrawerLayout)findViewById(R.layout.booking_drawer_fragment);
         
-        fragmentManager = getSupportFragmentManager();
+        fragmentManager = getFragmentManager();
         loginFragment = fragmentManager.findFragmentById(R.id.login_fragment);
         if(loginFragment == null) {
         	loginFragment = new LoginFragment();
@@ -51,6 +52,7 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+        	goToSettings();
             return true;
         }
         if (id == R.id.my_bookings) {
@@ -58,6 +60,28 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
         }
         if(id == R.id.bookings) {
         	goToBookings();
+        }
+        if(id == R.id.knockout) {
+        	goToKnockoutList();
+        }
+        switch(id) {
+        case R.id.action_settings:
+        	goToSettings();
+        	break;
+        case R.id.my_bookings:
+        	goToMyBookings();
+        	break;
+        case R.id.bookings:
+        	goToBookings();
+        	break;
+        case R.id.knockout:
+        	goToKnockoutList();
+        	break;
+        case R.id.logout:
+        	logout(this);
+        	break;
+        default:
+        	break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -68,7 +92,7 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
 	@Override
 	public void onLoginButtonClicked() {
 		if(fragmentManager == null) {
-			fragmentManager = getSupportFragmentManager();
+			fragmentManager = getFragmentManager();
 		}
 		bookingFragment = fragmentManager.findFragmentById(R.id.booking_fragment);
 		bookingFragment = new BookingFragment();
@@ -84,7 +108,7 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
 	
 	private void goToMyBookings() {
 		if(fragmentManager == null) {
-			fragmentManager = getSupportFragmentManager();
+			fragmentManager = getFragmentManager();
 		}
 		
 		myBookingsFragment = new MyBookingsFragment();
@@ -92,13 +116,43 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnLo
 		setTitle(getResources().getString(R.string.action_my_bookings));
 	}
 	
+	/**
+	 * Navigation to booking screen
+	 */
 	private void goToBookings() {
 		if(fragmentManager == null) {
-			fragmentManager = getSupportFragmentManager();
+			fragmentManager = getFragmentManager();
 		}
 		
 		myBookingsFragment = new BookingFragment();
 		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, myBookingsFragment).commit();
 		setTitle(getResources().getString(R.string.action_bookings));
+	}
+	
+	/**
+	 * Navigation to knockout list screen
+	 */
+	private void goToKnockoutList() {
+		if(fragmentManager == null) {
+			fragmentManager = getFragmentManager();
+		}
+		Fragment knockoutFragment = new KnockoutFragment();
+		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, knockoutFragment).commit();
+		setTitle(getResources().getString(R.string.knockout_list));
+	}
+	
+	private void goToSettings() {
+		if(fragmentManager == null) {
+			fragmentManager = getFragmentManager();
+		}
+		Fragment settingsFragment = new SettingsFragment();
+		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, settingsFragment).commit();
+		setTitle(getResources().getString(R.string.knockout_list));
+	}
+	
+	private void logout(Activity activity) {
+		Toast.makeText(this, R.string.logout_message, Toast.LENGTH_SHORT).show();
+		activity.finish();
+		
 	}
 }
