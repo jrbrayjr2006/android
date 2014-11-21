@@ -2,8 +2,8 @@ package com.fut5;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.os.Bundle;
 import android.app.FragmentManager;
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +20,7 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
 	Fragment loginFragment;
 	Fragment bookingFragment;
 	Fragment myBookingsFragment;
+	Fragment mRegisterFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +154,19 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
 	private void logout(Activity activity) {
 		Toast.makeText(this, R.string.logout_message, Toast.LENGTH_SHORT).show();
 		activity.finish();
+		
+	}
+
+
+	@Override
+	public void onRegisterTouch() {
+		if(fragmentManager == null) {
+			fragmentManager = getFragmentManager();
+		}
+		
+		mRegisterFragment = new RegisterFragment();
+		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, mRegisterFragment).commit();
+		setTitle(getResources().getString(R.string.register));
 		
 	}
 }

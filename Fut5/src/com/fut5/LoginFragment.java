@@ -3,23 +3,27 @@
  */
 package com.fut5;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fut5.helper.NetworkHelper;
@@ -34,9 +38,10 @@ public class LoginFragment extends Fragment {
 	EditText usernameEditText;
 	EditText passwordEditText;
     Button signinBtn;
+    TextView textViewRegister;
     HttpClient httpClient;
     HttpPost httpPost;
-    List<NameValuePair> nameValuePair;
+    List<NameValuePair> nameValuePairs;
     HttpResponse response;
     NetworkHelper networkHelper;
 	
@@ -47,6 +52,7 @@ public class LoginFragment extends Fragment {
 	 */
 	public interface OnLoginButtonClickedListener {
 		public void onLoginButtonClicked();
+		public void onRegisterTouch();
 	}
 	
 	private Button mLoginButton;
@@ -63,6 +69,7 @@ public class LoginFragment extends Fragment {
 		
 		usernameEditText = (EditText)v.findViewById(R.id.editUserName);
         passwordEditText = (EditText)v.findViewById(R.id.editRegisterPassword);
+        textViewRegister = (TextView)v.findViewById(R.id.textViewRegister);
 		
 		mLoginButton = (Button)v.findViewById(R.id.buttonLogin);
 		
@@ -85,6 +92,17 @@ public class LoginFragment extends Fragment {
 					}
 				}
 				
+			}
+			
+		});
+		
+		textViewRegister.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				v.performClick();
+				mCallback.onRegisterTouch();
+				return false;
 			}
 			
 		});
@@ -114,11 +132,14 @@ public class LoginFragment extends Fragment {
      * @return
      */
     public boolean login(String username, String password) {
+    	nameValuePairs = new ArrayList<NameValuePair>();
+    	nameValuePairs.add(new BasicNameValuePair("username", username));
+    	nameValuePairs.add(new BasicNameValuePair("password", password));
     	boolean result = false;
     	networkHelper = new NetworkHelper();
     	//TODO get rid of test code later
-    	result = true;
     	networkHelper.connectToNetwork(username, password);
+    	result = networkHelper.sendLoginData(nameValuePairs);
     	
     	return result;
     }

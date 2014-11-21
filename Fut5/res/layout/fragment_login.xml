@@ -31,4 +31,14 @@
         android:background="@color/orange_button"
         android:text="@string/login" />
 
+    <TextView
+        android:id="@+id/textViewRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:text="@string/register"
+        android:textColor="@color/orange_button"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
 </LinearLayout>

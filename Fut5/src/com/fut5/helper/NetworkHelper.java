@@ -33,7 +33,8 @@ public class NetworkHelper {
 	
 	NetworkConnector connect;
 	
-	public static final String SERVER_URL = "http://server";  //TODO get server url
+	public static final String TAG = "NetworkHelper";
+	public static final String SERVER_URL = "http://54.88.113.204/soccerbooking";  //TODO get server url
 
 	/**
 	 * 
@@ -53,16 +54,17 @@ public class NetworkHelper {
 
         //TODO change this once code is ready for production
         if ((parameters == null) || (parameters.isEmpty())) {
-            parameters.add(new BasicNameValuePair("email", "jrbrayjr2003@yahoo.com"));
+        	Log.d(TAG, "Parameters are null!");
+            parameters.add(new BasicNameValuePair("username", "test"));
             parameters.add(new BasicNameValuePair("password", "test123"));
         }
 
         Object[] params = {strUrl, parameters};
-        AsyncTask async = connect.execute(params);
+        AsyncTask<Object, Void, String> async = connect.execute(params);
         try {
-            Log.d("test", async.get().toString());
+            Log.d(TAG, async.get().toString());
         } catch (Exception e) {
-            Log.e("", e.getMessage());
+            Log.e(TAG, e.getMessage());
             return false;
         }
 
@@ -107,7 +109,7 @@ public class NetworkHelper {
 
 
             try {
-                URL url = new URL(_serverUrl);
+                URL url = new URL(_serverUrl + "/login_service.php");
                 HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
 
 
@@ -125,6 +127,7 @@ public class NetworkHelper {
                 bufferedWriter.close();
                 httpConn.connect();
                 responseCode = httpConn.getResponseCode();
+                Log.d(TAG, Integer.toString(responseCode));
                 // this.response = streamToString(httpConn.getInputStream());
                 // Log.d("Response Text", response);
                 //Log.d("Response code", Integer.toString(responseCode));
