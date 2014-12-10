@@ -3,8 +3,11 @@
  */
 package com.fut5;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
@@ -85,7 +88,7 @@ public class BookingFragment extends CoreBookingFragment {
 			
 		});
 		//mBookingListView.setId(android.R.id.list);
-		getActivity().setTitle(R.string.booking);
+		getActivity().setTitle(getActivity().getResources().getString(R.string.booking) + " " + formatTodaysDate());
 		return v;
 	}
 	
@@ -161,6 +164,15 @@ public class BookingFragment extends CoreBookingFragment {
 		}
     	
     }
+    
+    private String formatTodaysDate() {
+		String formattedDate = null;
+		Date rawDate = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd", Locale.US);
+		formattedDate = sdf.format(rawDate);
+		
+		return formattedDate;
+	}
 
 
 }

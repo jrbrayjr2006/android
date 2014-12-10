@@ -1,5 +1,9 @@
 package com.fut5;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -13,6 +17,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements LoginFragment.OnLoginButtonClickedListener, CoreBookingFragment.BookingAppCallbackListener {
 	
+	private boolean loggedin = false;
 	private DrawerLayout mDrawerLayout;
 	private String[] mNavigationArray;
 	private ListView mNavigationList;
@@ -36,6 +41,25 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
         	fragmentManager.beginTransaction().add(R.id.fragmentContainer,loginFragment).commit();
         }
         setTitle(getResources().getString(R.string.app_name));
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	if(fragmentManager == null) {
+			fragmentManager = getFragmentManager();
+		}
+    	if(loggedin == false) {
+            loginFragment = fragmentManager.findFragmentById(R.id.login_fragment);
+            if(loginFragment == null) {
+            	loginFragment = new LoginFragment();
+            	fragmentManager.beginTransaction().add(R.id.fragmentContainer,loginFragment).commit();
+            }
+    	} else {
+    		myBookingsFragment = new BookingFragment();
+    		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, myBookingsFragment).commit();
+    		setTitle(getResources().getString(R.string.action_bookings));
+    	}
     }
 
 
@@ -95,6 +119,7 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
 		if(fragmentManager == null) {
 			fragmentManager = getFragmentManager();
 		}
+		loggedin = true;
 		bookingFragment = fragmentManager.findFragmentById(R.id.booking_fragment);
 		bookingFragment = new BookingFragment();
 		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, bookingFragment).commit();
@@ -168,5 +193,14 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
 		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, mRegisterFragment).commit();
 		setTitle(getResources().getString(R.string.register));
 		
+	}
+	
+	private String formatTodaysDate() {
+		String formattedDate = null;
+		Date rawDate = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd", Locale.US);
+		formattedDate = sdf.format(rawDate);
+		
+		return formattedDate;
 	}
 }

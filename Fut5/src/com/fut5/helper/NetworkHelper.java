@@ -3,8 +3,10 @@
  */
 package com.fut5.helper;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -50,25 +52,24 @@ public class NetworkHelper {
 	
 	public boolean sendLoginData(List<NameValuePair> parameters) {
         connect = new NetworkConnector();
+        boolean result = false;
         String strUrl = SERVER_URL;
 
-        //TODO change this once code is ready for production
-        if ((parameters == null) || (parameters.isEmpty())) {
-        	Log.d(TAG, "Parameters are null!");
-            parameters.add(new BasicNameValuePair("username", "test"));
-            parameters.add(new BasicNameValuePair("password", "test123"));
-        }
 
         Object[] params = {strUrl, parameters};
         AsyncTask<Object, Void, String> async = connect.execute(params);
         try {
+        	String code = async.get().toString();
+        	if(code.equals("200")) {
+        		result = true;
+        	}
             Log.d(TAG, async.get().toString());
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
             return false;
         }
 
-        return true;
+        return result;
     }
 	
 	/**
@@ -93,9 +94,9 @@ public class NetworkHelper {
         protected String doInBackground(Object... params) {
             String url = (String) params[0];
             List<NameValuePair> valuePairs = (ArrayList<NameValuePair>) params[1];
-            String result = sendConnectionData(url, valuePairs);
-            Log.d("Results", result);
-            return result;
+            int result = sendConnectionData(url, valuePairs);
+            Log.d("Results", "Response code is " + Integer.toString(responseCode));
+            return Integer.toString(result);
 
         }
 
@@ -103,13 +104,12 @@ public class NetworkHelper {
          * @param _serverUrl
          * @return
          */
-        public String sendConnectionData(String _serverUrl, List<NameValuePair> parameters) {
+        public int sendConnectionData(String _serverUrl, List<NameValuePair> parameters) {
             OutputStream out = null;
             String queryString = null;
 
-
             try {
-                URL url = new URL(_serverUrl + "/login_service.php");
+                URL url = new URL(_serverUrl + "/login.php" + getQuery(parameters));
                 HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
 
 
@@ -121,20 +121,33 @@ public class NetworkHelper {
                 out = httpConn.getOutputStream();
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, "UTF-8");
                 BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-                queryString = getQuery(parameters);
-                bufferedWriter.write(queryString);
+                //queryString = getQuery(parameters);
+                //bufferedWriter.write(queryString);
                 bufferedWriter.flush();
                 bufferedWriter.close();
                 httpConn.connect();
                 responseCode = httpConn.getResponseCode();
+                BufferedReader reader = null;
+                // read the output from the server
+                reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
+                StringBuilder stringBuilder = new StringBuilder();
+           
+                String line = null;
+                while ((line = reader.readLine()) != null)
+                {
+                  stringBuilder.append(line + "\n");
+                }
+                Log.d(TAG, "URL " + stringBuilder.toString());
+                Log.d(TAG, "The url path is " + httpConn.getURL().getPath());
+                Log.d(TAG, "The query is " + httpConn.getURL().getQuery());
                 Log.d(TAG, Integer.toString(responseCode));
                 // this.response = streamToString(httpConn.getInputStream());
                 // Log.d("Response Text", response);
                 //Log.d("Response code", Integer.toString(responseCode));
             } catch (MalformedURLException mue) {
-                Log.e("Error", mue.getMessage());
+                Log.e("MalformedURLException Error", "" + mue.getMessage());
             } catch (IOException ioe) {
-                Log.e("Error", ioe.getMessage());
+                Log.e("IOException Error", ioe.getMessage());
             } finally {
                 if (out != null) {
                     try {
@@ -144,8 +157,10 @@ public class NetworkHelper {
                     }
                 }
             }
+            
             Log.d("POST URL", _serverUrl + queryString);
-            return "Response code is " + Integer.toString(responseCode);
+            //return "Response code is " + Integer.toString(responseCode);
+            return responseCode;
         }
         
         /**
@@ -159,8 +174,10 @@ public class NetworkHelper {
             boolean first = true;
 
             for (NameValuePair pair : params) {
-                if (first)
+                if (first) {
+                	result.append("?");
                     first = false;
+                }
                 else
                     result.append("&");
 
