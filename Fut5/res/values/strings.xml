@@ -14,6 +14,7 @@
     <string name="join_knockout_list">Join The Knockout List</string>
     <string name="ok_label">OK</string>
     <string name="cancel_label">Cancel</string>
+    <string name="hint_number_of_guests">Enter number of guest here</string>
     <string name="knockout_game_time">Game Time</string>
     <string name="knockout_players_confirmed">Players Confirmed</string>
     <string name="join_the_list_button_text">Join The List</string>
