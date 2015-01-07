@@ -76,6 +76,9 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if(id == android.R.id.home) {
+        	Toast.makeText(this, "Home Button Clicked!", Toast.LENGTH_SHORT).show();
+        }
         if (id == R.id.action_settings) {
         	goToSettings();
             return true;
@@ -90,6 +93,9 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
         	goToKnockoutList();
         }
         switch(id) {
+        case android.R.id.home:
+        	Toast.makeText(this, "Home Button Clicked!", Toast.LENGTH_SHORT).show();
+        	break;
         case R.id.action_settings:
         	goToSettings();
         	break;

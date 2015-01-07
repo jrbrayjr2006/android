@@ -15,12 +15,22 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:text="Large Text"
+        android:gravity="center"
+        android:text="01/06/2015 | 8:00 PM"
         android:layout_marginLeft="16dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <Button
+        android:id="@+id/buttonJoinTheList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@color/orange_button"
+        android:text="@string/join_the_list_button_text" />
 
     <ImageView
         android:id="@+id/imageView1"
@@ -29,5 +39,14 @@
         android:contentDescription="@string/knockout_players_confirmed"
         android:layout_marginLeft="16dp"
         android:src="@drawable/knockout_players_confirmed" />
+
+    <TextView
+        android:id="@+id/textViewNumberOfPlayers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="0 of 10"
+        android:textColor="@color/white"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>

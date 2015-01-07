@@ -39,10 +39,7 @@ public class LoginFragment extends Fragment {
 	EditText passwordEditText;
     Button signinBtn;
     TextView textViewRegister;
-    HttpClient httpClient;
-    HttpPost httpPost;
     List<NameValuePair> nameValuePairs;
-    HttpResponse response;
     NetworkHelper networkHelper;
 	
 	/**

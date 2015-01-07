@@ -3,13 +3,21 @@
  */
 package com.fut5;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.app.DialogFragment;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.fut5.helper.NetworkHelper;
 import com.fut5.model.Booking;
 
 
@@ -27,7 +35,12 @@ import com.fut5.model.Booking;
  */
 public class TimeSelectionDialogFragment extends DialogFragment {
 	
+	private static final String TAG = "TimeSelectionDialogFragment";
+	private static final String TRANSACTION = "book_time";
+	
 	Booking mBooking;
+	List<NameValuePair> nameValuePairs;
+	NetworkHelper networkHelper;
 	
 	public TimeSelectionDialogFragment(Booking _booking){
 		super();
@@ -66,8 +79,17 @@ public class TimeSelectionDialogFragment extends DialogFragment {
 	 * Use the network helper to record the booking
 	 */
 	private void saveSelectedTimeInBookingEngine(Booking _booking) {
+		nameValuePairs = new ArrayList<NameValuePair>();
 		//TODO make a call to booking engine
-		Toast.makeText(getActivity(), "Booked " + _booking.getDuration() + " hour(s) at " + _booking.getBookingTime(), Toast.LENGTH_SHORT).show();
+		boolean result = false;
+    	networkHelper = new NetworkHelper();
+    	nameValuePairs.add(new BasicNameValuePair("timeslot", mBooking.getBookingTime()));
+    	nameValuePairs.add(new BasicNameValuePair("datetime", mBooking.getDateTime().toString()));
+    	nameValuePairs.add(new BasicNameValuePair("duration", Integer.toString(_booking.getDuration())));
+    	networkHelper.sendData(nameValuePairs, TRANSACTION);
+    	String message = "Booked " + _booking.getDuration() + " hour(s) at " + _booking.getBookingTime();
+    	Log.d(TAG, message);
+		Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
 	}
 
 }

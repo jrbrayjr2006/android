@@ -2,6 +2,8 @@
 <resources>
 
     <string name="app_name">Fut5</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
     <string name="settings_preferences">Booking Settings</string>
     <string name="action_my_bookings">My Bookings</string>
@@ -9,8 +11,12 @@
     <string name="register">Register</string>
     <string name="logout">Log out</string>
     <string name="knockout_list">Knockout List</string>
+    <string name="join_knockout_list">Join The Knockout List</string>
+    <string name="ok_label">OK</string>
+    <string name="cancel_label">Cancel</string>
     <string name="knockout_game_time">Game Time</string>
     <string name="knockout_players_confirmed">Players Confirmed</string>
+    <string name="join_the_list_button_text">Join The List</string>
     <string name="login">Log In</string>
     <string name="logout_message">Logging out...</string>
     <string name="create_account_btn_txt">Create Account</string>

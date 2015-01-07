@@ -3,6 +3,7 @@
  */
 package com.fut5;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,12 +11,12 @@ import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
-import android.content.Context;
-import android.database.Cursor;
-import android.os.Bundle;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.database.Cursor;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,8 @@ import com.fut5.model.Booking;
  */
 public class BookingFragment extends CoreBookingFragment {
 	
+	private static final String TAG = "BookingFragment";
+	
 	private ListView mBookingListView;
 	
 	private ArrayAdapter<String> mArrayAdapter;
@@ -47,6 +50,8 @@ public class BookingFragment extends CoreBookingFragment {
 	private List<Booking> bookingArray = new ArrayList<Booking>();
 	
 	static final String[] PROJECTION = new String[] {};
+	
+	public static final String TRANSACTION = "book_time";
 	
 	BookingAppCallbackListener mCallback;
 	
@@ -66,7 +71,7 @@ public class BookingFragment extends CoreBookingFragment {
 		int bookingLayoutID = R.layout.booking_item;
 		
 		mArrayAdapter = new ArrayAdapter<String>(getActivity(),layoutID,bookingTimeArray); //TODO to be removed
-		bookingArray = populateDummyBookings();
+		bookingArray = initializeBookingsList();
 		mBookingListAdapter = new BookingListAdapter(getActivity(),bookingArray);
 		mBookingListView = (ListView)v.findViewById(android.R.id.list);
 		//bookingArrayList = new ArrayList<String>(Arrays.asList(bookingTimeArray));
@@ -128,6 +133,29 @@ public class BookingFragment extends CoreBookingFragment {
     		book.setBookingTime(bTime);
     		b.add(book);
     	}
+    	
+    	return b;
+    }
+    
+    /**
+     * This method is for testing and demo purposes
+     * @return
+     */
+    private List<Booking> initializeBookingsList() {
+    	List<Booking> b = new ArrayList<Booking>();
+    	
+    	//String dateInString = new java.text.SimpleDateFormat("EEEE, hh:mm").format(cal.getTime())
+        SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
+        try {
+	    	for(String bTime: bookingTimeArray) {
+	    		Booking book = new Booking();
+	    		book.setDateTime(formatter.parse(bTime));
+	    		book.setBookingTime(bTime);
+	    		b.add(book);
+	    	}
+        } catch(ParseException pe) {
+        	Log.e(TAG, pe.getMessage());
+        }
     	
     	return b;
     }
