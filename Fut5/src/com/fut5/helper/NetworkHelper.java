@@ -20,6 +20,8 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.fut5.BookingFragment;
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -53,7 +55,7 @@ public class NetworkHelper {
 	public boolean sendLoginData(List<NameValuePair> parameters) {
         connect = new NetworkConnector();
         boolean result = false;
-        String strUrl = SERVER_URL;
+        String strUrl = SERVER_URL + "/login.php";
 
 
         Object[] params = {strUrl, parameters};
@@ -71,6 +73,32 @@ public class NetworkHelper {
 
         return result;
     }
+	
+	public boolean sendData(List<NameValuePair> _parameters, String _transaction) {
+		connect = new NetworkConnector();
+        boolean result = false;
+        String strUrl = SERVER_URL;
+        
+        if(_transaction.equals(BookingFragment.TRANSACTION)) {
+        	strUrl = strUrl + "/book-soccer.php";
+        }
+
+
+        Object[] params = {strUrl, _parameters};
+        AsyncTask<Object, Void, String> async = connect.execute(params);
+        try {
+        	String code = async.get().toString();
+        	if(code.equals("200")) {
+        		result = true;
+        	}
+            Log.d(TAG, async.get().toString());
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+            return false;
+        }
+
+        return result;
+	}
 	
 	/**
 	 * 
@@ -109,7 +137,8 @@ public class NetworkHelper {
             String queryString = null;
 
             try {
-                URL url = new URL(_serverUrl + "/login.php" + getQuery(parameters));
+                URL url = new URL(_serverUrl + getQuery(parameters));
+                Log.d(TAG, url.getPath() + url.getQuery());
                 HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
 
 
@@ -185,6 +214,7 @@ public class NetworkHelper {
                 result.append("=");
                 result.append(URLEncoder.encode(pair.getValue(), "UTF-8"));
             }
+            Log.d(TAG, "Query String:  " + result.toString());
             return result.toString();
         }
 
