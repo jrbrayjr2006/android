@@ -42,6 +42,8 @@ public class TimeSelectionDialogFragment extends DialogFragment {
 	List<NameValuePair> nameValuePairs;
 	NetworkHelper networkHelper;
 	
+	String mBookingInfoMessage;
+	
 	public TimeSelectionDialogFragment(Booking _booking){
 		super();
 		mBooking = _booking;
@@ -56,18 +58,29 @@ public class TimeSelectionDialogFragment extends DialogFragment {
 			@Override
 			public void onClick(DialogInterface dialog, int duration) {
 				// TODO Auto-generated method stub
+				boolean bookedFieldAndTime = false;
 				switch(duration) {
 				case 0:
 					mBooking.setDuration(duration + 1);
-					saveSelectedTimeInBookingEngine(mBooking);
+					bookedFieldAndTime = saveSelectedTimeInBookingEngine(mBooking);
 					break;
 				case 1:
 					mBooking.setDuration(duration + 1);
-					saveSelectedTimeInBookingEngine(mBooking);
+					bookedFieldAndTime = saveSelectedTimeInBookingEngine(mBooking);
 					break;
 				default:
 					Toast.makeText(getActivity(), "Nothing selected!", Toast.LENGTH_SHORT).show();
 					break;
+				}
+				
+				if(bookedFieldAndTime) {
+					mBookingInfoMessage = getResources().getString(R.string.press_ok_message);
+					DialogFragment bookingInfoDialogFragment = new BookingInfoDialogFragment(mBookingInfoMessage);
+					bookingInfoDialogFragment.show(getFragmentManager(), TAG);
+				} else {
+					mBookingInfoMessage = getResources().getString(R.string.unable_to_book_message);
+					DialogFragment bookingInfoDialogFragment = new BookingInfoDialogFragment(mBookingInfoMessage);
+					bookingInfoDialogFragment.show(getFragmentManager(), TAG);
 				}
 			}
 		});
@@ -78,10 +91,10 @@ public class TimeSelectionDialogFragment extends DialogFragment {
 	/**
 	 * Use the network helper to record the booking
 	 */
-	private void saveSelectedTimeInBookingEngine(Booking _booking) {
+	private boolean saveSelectedTimeInBookingEngine(Booking _booking) {
 		nameValuePairs = new ArrayList<NameValuePair>();
 		//TODO make a call to booking engine
-		boolean result = false;
+		boolean result = true;  //TODO Set to false by default and only reset to true when booking confirmed
     	networkHelper = new NetworkHelper();
     	nameValuePairs.add(new BasicNameValuePair("timeslot", mBooking.getBookingTime()));
     	nameValuePairs.add(new BasicNameValuePair("datetime", mBooking.getDateTime().toString()));
@@ -90,6 +103,8 @@ public class TimeSelectionDialogFragment extends DialogFragment {
     	String message = "Booked " + _booking.getDuration() + " hour(s) at " + _booking.getBookingTime();
     	Log.d(TAG, message);
 		Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+		Log.d(TAG, "Exiting saveSelectedTimeInBookingEngine...");
+		return result;
 	}
 
 }
