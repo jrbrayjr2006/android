@@ -74,14 +74,12 @@ public class TimeSelectionDialogFragment extends DialogFragment {
 				}
 				
 				if(bookedFieldAndTime) {
-					mBookingInfoMessage = getResources().getString(R.string.press_ok_message);
-					DialogFragment bookingInfoDialogFragment = new BookingInfoDialogFragment(mBookingInfoMessage);
-					bookingInfoDialogFragment.show(getFragmentManager(), TAG);
+					mBookingInfoMessage = buildBookingInfoMessage(getResources().getString(R.string.press_ok_message));
 				} else {
-					mBookingInfoMessage = getResources().getString(R.string.unable_to_book_message);
-					DialogFragment bookingInfoDialogFragment = new BookingInfoDialogFragment(mBookingInfoMessage);
-					bookingInfoDialogFragment.show(getFragmentManager(), TAG);
+					mBookingInfoMessage = buildBookingInfoMessage(getResources().getString(R.string.unable_to_book_message));
 				}
+				DialogFragment bookingInfoDialogFragment = new BookingInfoDialogFragment(mBookingInfoMessage);
+				bookingInfoDialogFragment.show(getFragmentManager(), TAG);
 			}
 		});
 		
@@ -102,9 +100,22 @@ public class TimeSelectionDialogFragment extends DialogFragment {
     	networkHelper.sendData(nameValuePairs, TRANSACTION);
     	String message = "Booked " + _booking.getDuration() + " hour(s) at " + _booking.getBookingTime();
     	Log.d(TAG, message);
-		Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+		//Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
 		Log.d(TAG, "Exiting saveSelectedTimeInBookingEngine...");
 		return result;
+	}
+	
+	/**
+	 * 
+	 */
+	private String buildBookingInfoMessage(String _message) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("date");
+		sb.append(" @ ");
+		sb.append(mBooking.getBookingTime());
+		sb.append("\n");
+		sb.append(_message);
+		return sb.toString();
 	}
 
 }

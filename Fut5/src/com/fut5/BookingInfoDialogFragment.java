@@ -46,7 +46,7 @@ public class BookingInfoDialogFragment extends DialogFragment {
 	}
 	
 	/**
-	 * 
+	 * May not be used anymore
 	 * @return
 	 */
 	private String buildMessage() {

@@ -65,8 +65,6 @@ public class BookingFragment extends CoreBookingFragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View v = inflater.inflate(R.layout.fragment_booking, container, false);
 		
-		//int[] toViews = {android.R.id.text1};
-		
 		int layoutID = android.R.layout.simple_list_item_1;
 		int bookingLayoutID = R.layout.booking_item;
 		
