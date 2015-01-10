@@ -137,6 +137,7 @@ public class NetworkHelper {
             String queryString = null;
 
             try {
+            	Log.d(TAG, "opening " + _serverUrl + getQuery(parameters));
                 URL url = new URL(_serverUrl + getQuery(parameters));
                 Log.d(TAG, url.getPath() + url.getQuery());
                 HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
@@ -146,6 +147,8 @@ public class NetworkHelper {
                 httpConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 httpConn.setDoInput(true);
                 httpConn.setDoOutput(true);
+                responseCode = httpConn.getResponseCode();
+                Log.d(TAG, "The response code on first try is " + responseCode);
 
                 out = httpConn.getOutputStream();
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, "UTF-8");
@@ -156,6 +159,7 @@ public class NetworkHelper {
                 bufferedWriter.close();
                 httpConn.connect();
                 responseCode = httpConn.getResponseCode();
+                Log.d(TAG, "The response code on second try is " + responseCode);
                 BufferedReader reader = null;
                 // read the output from the server
                 reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
