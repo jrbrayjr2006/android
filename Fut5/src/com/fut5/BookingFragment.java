@@ -81,12 +81,11 @@ public class BookingFragment extends CoreBookingFragment {
 				Booking bookThis = bookingArray.get(position);
 				
 				openBookingDialog(bookThis);
-				//mCallback.onBookingItemClicked();
 				//Toast.makeText(getActivity(), "Time Selected..." + position, Toast.LENGTH_SHORT).show();
 			}
 			
 		});
-		//mBookingListView.setId(android.R.id.list);
+		
 		getActivity().setTitle(getActivity().getResources().getString(R.string.booking) + " " + formatTodaysDate());
 		return v;
 	}
@@ -122,19 +121,17 @@ public class BookingFragment extends CoreBookingFragment {
      */
     private List<Booking> initializeBookingsList() {
     	List<Booking> b = new ArrayList<Booking>();
-    	
-    	//String dateInString = new java.text.SimpleDateFormat("EEEE, hh:mm").format(cal.getTime())
-        SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
-        try {
-	    	for(String bTime: bookingTimeArray) {
-	    		Booking book = new Booking();
-	    		book.setDateTime(formatter.parse(bTime));
-	    		book.setBookingTime(bTime);
-	    		b.add(book);
-	    	}
-        } catch(ParseException pe) {
-        	Log.e(TAG, pe.getMessage());
-        }
+        //SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
+        //try {
+    	for(String bTime: bookingTimeArray) {
+    		Booking book = new Booking();
+    		book.setDateTime(new Date());
+    		book.setBookingTime(bTime);
+    		b.add(book);
+    	}
+        //} catch(ParseException pe) {
+        	//Log.e(TAG, pe.getMessage());
+        //}
     	
     	return b;
     }
@@ -142,33 +139,6 @@ public class BookingFragment extends CoreBookingFragment {
     public void openBookingDialog(Booking _booking) {
     	DialogFragment dmBookingTimeSelection = new TimeSelectionDialogFragment(_booking);
     	dmBookingTimeSelection.show(getFragmentManager(), getResources().getString(R.string.booking_select_duration));
-    	
-    }
-    
-    
-    private static class BookingListInnerAdapter extends ArrayAdapter<Booking> {
-    	
-    	private final LayoutInflater mInflater;
-
-		public BookingListInnerAdapter(Context context, List<Booking> objects) {
-			super(context, -1, objects);
-			mInflater = LayoutInflater.from(context);
-			// TODO Auto-generated constructor stub
-		}
-		
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			final Booking booking = getItem(position);
-			
-			if(convertView == null) {
-				convertView = mInflater.inflate(R.layout.booking_item, parent, false);
-			}
-			
-			TextView tv = (TextView)convertView.findViewById(R.id.booking_time_item);
-			tv.setText(booking.getBookingTime());
-			
-			return convertView;
-		}
     	
     }
     
@@ -180,13 +150,6 @@ public class BookingFragment extends CoreBookingFragment {
 		
 		return formattedDate;
 	}
-    
-    private String setDisplayDate() {
-    	Date date = new Date();
-    	
-    	
-    	return null;
-    }
 
 
 }

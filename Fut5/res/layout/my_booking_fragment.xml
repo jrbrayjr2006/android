@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/myBookingsMessageTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/no_bookings"
@@ -14,6 +14,13 @@
         android:layout_marginRight="16dp"
         android:textColor="@color/white"
         android:gravity="center"
+        android:visibility="invisible"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ListView
+        android:id="@+id/myBookingsListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
 
 </LinearLayout>
