@@ -21,6 +21,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.fut5.BookingFragment;
+import com.fut5.MyBookingsFragment;
 import com.fut5.RegisterFragment;
 
 import android.os.AsyncTask;
@@ -85,6 +86,9 @@ public class NetworkHelper {
         }
         if(_transaction.equals(RegisterFragment.TRANSACTION)) {
         	strUrl = strUrl + "/register.php";
+        }
+        if(_transaction.equals(MyBookingsFragment.TRANSACTION)) {
+        	strUrl = strUrl + "/my-bookings.php";
         }
 
 
