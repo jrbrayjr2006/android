@@ -5,19 +5,18 @@
     android:layout_height="match_parent"
     android:background="@drawable/core_background"
     android:orientation="vertical" >
-	<!-- 
+	
     <TextView 
-        android:id="@+id/dateEditText" 
+        android:id="@+id/dateTextView" 
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content" 
         android:ems="10" 
         android:textColor="@color/silver"
         android:gravity="center"
         android:text="Oct 1, 2014"/>
-    -->
     
     <TextView
-        android:id="@+id/android:empty"
+        android:id="@+id/availableTimesTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/orange_button"
