@@ -39,12 +39,13 @@ public class BookingFragment extends CoreBookingFragment {
 	private static final String TAG = "BookingFragment";
 	
 	private ListView mBookingListView;
+	private TextView mDateTextView;
 	
-	private ArrayAdapter<String> mArrayAdapter;
+	//private ArrayAdapter<String> mArrayAdapter;
 	
 	private BookingListAdapter mBookingListAdapter;
 	
-	private ArrayList<String> bookingArrayList;
+	//private ArrayList<String> bookingArrayList;
 	
 	private String[] bookingTimeArray = {"10:00 AM", "11:00 AM","1:00 PM","2:00 PM","3:00 PM","5:00 PM","6:00 PM", "7:00 PM", "8:00 PM"};
 	private List<Booking> bookingArray = new ArrayList<Booking>();
@@ -65,16 +66,11 @@ public class BookingFragment extends CoreBookingFragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View v = inflater.inflate(R.layout.fragment_booking, container, false);
 		
-		int layoutID = android.R.layout.simple_list_item_1;
-		int bookingLayoutID = R.layout.booking_item;
-		
-		mArrayAdapter = new ArrayAdapter<String>(getActivity(),layoutID,bookingTimeArray); //TODO to be removed
 		bookingArray = initializeBookingsList();
+		mDateTextView = (TextView)v.findViewById(R.id.dateTextView);
+		mDateTextView.setText(formatTodaysDate());
 		mBookingListAdapter = new BookingListAdapter(getActivity(),bookingArray);
 		mBookingListView = (ListView)v.findViewById(android.R.id.list);
-		//bookingArrayList = new ArrayList<String>(Arrays.asList(bookingTimeArray));
-		
-		//mBookingListView.setAdapter(mArrayAdapter); //TODO to be removed
 		mBookingListView.setAdapter(mBookingListAdapter);
 		
 		mBookingListView.setOnItemClickListener(new OnItemClickListener() {
@@ -119,21 +115,6 @@ public class BookingFragment extends CoreBookingFragment {
     	}
     }
     
-    /**
-     * This method is for testing and demo purposes
-     * @return
-     */
-    private List<Booking> populateDummyBookings() {
-    	List<Booking> b = new ArrayList<Booking>();
-
-    	for(String bTime: bookingTimeArray) {
-    		Booking book = new Booking();
-    		book.setBookingTime(bTime);
-    		b.add(book);
-    	}
-    	
-    	return b;
-    }
     
     /**
      * This method is for testing and demo purposes
@@ -194,11 +175,18 @@ public class BookingFragment extends CoreBookingFragment {
     private String formatTodaysDate() {
 		String formattedDate = null;
 		Date rawDate = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd", Locale.US);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 		formattedDate = sdf.format(rawDate);
 		
 		return formattedDate;
 	}
+    
+    private String setDisplayDate() {
+    	Date date = new Date();
+    	
+    	
+    	return null;
+    }
 
 
 }

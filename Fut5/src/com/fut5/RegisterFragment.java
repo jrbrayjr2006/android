@@ -3,6 +3,14 @@
  */
 package com.fut5;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.fut5.helper.NetworkHelper;
+
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +29,7 @@ import android.widget.Toast;
 public class RegisterFragment extends Fragment {
 	
 	private static final String TAG = "RegisterFragment";
+	public static final String TRANSACTION = "register";
 	
 	private EditText editTextFirstName;
 	private EditText editTextLastName;
@@ -29,6 +38,9 @@ public class RegisterFragment extends Fragment {
 	private EditText editTextRegisterPassword;
 	private EditText editTextConfirmPassword;
 	private Button buttonCreateAccount;
+	
+	private List<NameValuePair> nameValuePairs;
+    private NetworkHelper networkHelper;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +64,17 @@ public class RegisterFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				if(editTextRegisterPassword.getText().toString().equals(editTextConfirmPassword.getText().toString())) {
-					//TODO
+					String firstname = editTextFirstName.getText().toString();
+					String lastname = editTextLastName.getText().toString();
+					String username = editTextRegisterUsername.getText().toString();
+					String password = editTextRegisterPassword.getText().toString();
+					nameValuePairs = new ArrayList<NameValuePair>();
+					nameValuePairs.add(new BasicNameValuePair("firstname", firstname));
+					nameValuePairs.add(new BasicNameValuePair("lastname", lastname));
+					nameValuePairs.add(new BasicNameValuePair("username", username));
+					nameValuePairs.add(new BasicNameValuePair("password", password));
+					register(nameValuePairs);
+					Toast.makeText(getActivity(), getResources().getString(R.string.register_success_message), Toast.LENGTH_SHORT).show();
 				} else {
 					String message = "Passwords do not match, please re-enter your password!";
 					Log.i(TAG, message);
@@ -63,6 +85,18 @@ public class RegisterFragment extends Fragment {
 		});
 		
 		return v;
+	}
+	
+	/**
+	 * 
+	 * @param _nameValuePairs
+	 * @return
+	 */
+	private boolean register(List<NameValuePair> _nameValuePairs) {
+		boolean result = true;
+		networkHelper = new NetworkHelper();
+		result = networkHelper.sendData(_nameValuePairs, TRANSACTION);
+		return result;
 	}
 
 }
