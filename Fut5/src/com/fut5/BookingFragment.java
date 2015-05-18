@@ -3,7 +3,6 @@
  */
 package com.fut5;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,7 +11,6 @@ import java.util.Locale;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -20,26 +18,29 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fut5.adapter.BookingListAdapter;
 import com.fut5.model.Booking;
+import com.fut5.model.SoccerField;
 
 /**
  * @author james_r_bray
  *
  */
-public class BookingFragment extends CoreBookingFragment {
+public class BookingFragment extends CoreBookingFragment implements FieldSelectionDialogFragment.SoccerFieldDialogCallbackInterface {
 	
 	private static final String TAG = "BookingFragment";
 	
 	private ListView mBookingListView;
 	private TextView mDateTextView;
+	private Button mFieldSelectButton;
 	
 	//private ArrayAdapter<String> mArrayAdapter;
 	
@@ -50,9 +51,17 @@ public class BookingFragment extends CoreBookingFragment {
 	private String[] bookingTimeArray = {"10:00 AM", "11:00 AM","1:00 PM","2:00 PM","3:00 PM","5:00 PM","6:00 PM", "7:00 PM", "8:00 PM"};
 	private List<Booking> bookingArray = new ArrayList<Booking>();
 	
+	private String mSoccerFieldName; 
+	
+	private SoccerField mSelectedSoccerField;
+	
 	static final String[] PROJECTION = new String[] {};
 	
 	public static final String TRANSACTION = "book_time";
+	
+	public interface SoccerFieldDialogCallbackInterface {
+		public String getSoccerFieldName();
+	}
 	
 	BookingAppCallbackListener mCallback;
 	
@@ -69,6 +78,15 @@ public class BookingFragment extends CoreBookingFragment {
 		bookingArray = initializeBookingsList();
 		mDateTextView = (TextView)v.findViewById(R.id.dateTextView);
 		mDateTextView.setText(formatTodaysDate());
+		mFieldSelectButton = (Button)v.findViewById(R.id.fieldSelectButton);
+		mFieldSelectButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				openFieldSelectionDialog();
+				
+			}});
+		
 		mBookingListAdapter = new BookingListAdapter(getActivity(),bookingArray);
 		mBookingListView = (ListView)v.findViewById(android.R.id.list);
 		mBookingListView.setAdapter(mBookingListAdapter);
@@ -85,6 +103,8 @@ public class BookingFragment extends CoreBookingFragment {
 			}
 			
 		});
+		
+		mBookingListView.setEnabled(false);
 		
 		getActivity().setTitle(getActivity().getResources().getString(R.string.booking) + " " + formatTodaysDate());
 		return v;
@@ -142,6 +162,18 @@ public class BookingFragment extends CoreBookingFragment {
     	
     }
     
+    /**
+     * Enable the list of times after the soccer field has been selected
+     */
+    public void openFieldSelectionDialog() {
+    	Log.d(TAG, "Entering openFieldSelectionDialog()...");
+    	DialogFragment dmFieldSelection = new FieldSelectionDialogFragment();
+    	dmFieldSelection.setTargetFragment(this, 0);
+    	dmFieldSelection.show(getFragmentManager(), getResources().getString(R.string.booking_field_names));
+    	mBookingListView.setEnabled(true);
+    	Log.d(TAG, "Exiting openFieldSelectionDialog()...");
+    }
+    
     private String formatTodaysDate() {
 		String formattedDate = null;
 		Date rawDate = new Date();
@@ -149,6 +181,13 @@ public class BookingFragment extends CoreBookingFragment {
 		formattedDate = sdf.format(rawDate);
 		
 		return formattedDate;
+	}
+
+	@Override
+	public String getSoccerFieldName(String name) {
+		mSoccerFieldName = name;
+		mFieldSelectButton.setText(mSoccerFieldName);
+		return mSoccerFieldName;
 	}
 
 

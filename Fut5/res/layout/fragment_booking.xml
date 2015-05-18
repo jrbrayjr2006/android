@@ -15,6 +15,13 @@
         android:gravity="center"
         android:text="Oct 1, 2014"/>
     
+    <Button 
+        android:id="@+id/fieldSelectButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/select_field" />
+    
     <TextView
         android:id="@+id/availableTimesTextView"
         android:layout_width="match_parent"

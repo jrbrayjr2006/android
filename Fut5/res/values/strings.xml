@@ -41,5 +41,12 @@
     </string-array>
     <string name="unable_to_book_message">Unable to book the selected time!</string>
     <string name="press_ok_message">Press OK to Confirm</string>
+    <string name="booking_field_names">Soccer Fields</string>
+    <string name="select_field">Select Soccer Field</string>
+    <string-array name="soccer_fields">
+        <item>Soccer Field 1</item>
+        <item>Soccer Field 2</item>
+        <item>Soccer Field 3</item>
+    </string-array>
 
 </resources>
