@@ -29,6 +29,7 @@ import android.widget.TextView;
 import com.fut5.adapter.BookingListAdapter;
 import com.fut5.model.Booking;
 import com.fut5.model.SoccerField;
+import com.fut5.model.User;
 
 /**
  * @author james_r_bray
@@ -53,6 +54,8 @@ public class BookingFragment extends CoreBookingFragment implements FieldSelecti
 	
 	private String mSoccerFieldName; 
 	
+	private User user;
+	
 	private SoccerField mSelectedSoccerField;
 	
 	static final String[] PROJECTION = new String[] {};
@@ -64,6 +67,10 @@ public class BookingFragment extends CoreBookingFragment implements FieldSelecti
 	}
 	
 	BookingAppCallbackListener mCallback;
+	
+	public BookingFragment(User _user) {
+		this.user = _user;
+	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -77,7 +84,7 @@ public class BookingFragment extends CoreBookingFragment implements FieldSelecti
 		
 		bookingArray = initializeBookingsList();
 		mDateTextView = (TextView)v.findViewById(R.id.dateTextView);
-		mDateTextView.setText(formatTodaysDate());
+		mDateTextView.setText(user.getFirstname() + " - " + formatTodaysDate());
 		mFieldSelectButton = (Button)v.findViewById(R.id.fieldSelectButton);
 		mFieldSelectButton.setOnClickListener(new OnClickListener() {
 

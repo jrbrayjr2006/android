@@ -13,7 +13,7 @@
         android:ems="10" 
         android:textColor="@color/silver"
         android:gravity="center"
-        android:text="Oct 1, 2014"/>
+        android:text=""/>
     
     <Button 
         android:id="@+id/fieldSelectButton"

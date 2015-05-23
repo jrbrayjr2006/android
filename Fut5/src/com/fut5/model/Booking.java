@@ -13,9 +13,11 @@ public class Booking {
 	
 	protected final static String TAG = "Booking";
 	
+	int userId;  // Not sure if I will need this
 	String bookingTime;
 	Date dateTime;
 	boolean available;
+	String soccerFieldName;
 	int duration;
 
 	/**
@@ -55,6 +57,14 @@ public class Booking {
 
 	public void setDuration(int duration) {
 		this.duration = duration;
+	}
+
+	public String getSoccerFieldName() {
+		return soccerFieldName;
+	}
+
+	public void setSoccerFieldName(String soccerFieldName) {
+		this.soccerFieldName = soccerFieldName;
 	}
 
 }

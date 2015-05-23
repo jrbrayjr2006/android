@@ -3,6 +3,8 @@
  */
 package com.fut5.model;
 
+import java.util.List;
+
 /**
  * @author james_r_bray
  *
@@ -13,12 +15,21 @@ public class User {
 	private String username;
 	private String firstname;
 	private String lastname;
+	private List<Booking> myBookings;
+	private static User user;
 
 	/**
 	 * 
 	 */
-	public User() {
+	private User() {
 		// TODO Auto-generated constructor stub
+	}
+	
+	public static User getInstance() {
+		if(user == null) {
+			user = new User();
+		}
+		return user;
 	}
 
 	public int getUserId() {
@@ -51,6 +62,14 @@ public class User {
 
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
+	}
+
+	public List<Booking> getMyBookings() {
+		return myBookings;
+	}
+
+	public void setMyBookings(List<Booking> myBookings) {
+		this.myBookings = myBookings;
 	}
 	
 
