@@ -4,28 +4,31 @@
 package com.fut5.helper;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.os.AsyncTask;
+import android.util.Log;
 
 import com.fut5.BookingFragment;
 import com.fut5.MyBookingsFragment;
 import com.fut5.RegisterFragment;
-
-import android.os.AsyncTask;
-import android.util.Log;
+import com.fut5.model.Booking;
+import com.fut5.model.User;
+//import org.apache.http.message.BasicNameValuePair;
 
 /**
  * <pre>
@@ -61,7 +64,7 @@ public class NetworkHelper {
 
 
         Object[] params = {strUrl, parameters};
-        AsyncTask<Object, Void, String> async = connect.execute(params);
+        AsyncTask<Object, Void, Object> async = connect.execute(params);
         try {
         	String code = async.get().toString();
         	if(code.equals("200")) {
@@ -88,12 +91,12 @@ public class NetworkHelper {
         	strUrl = strUrl + "/register.php";
         }
         if(_transaction.equals(MyBookingsFragment.TRANSACTION)) {
-        	strUrl = strUrl + "/my-bookings.php";
+        	strUrl = strUrl + "/my-bookings.php";  // can change this to /getMyBookings.php
         }
 
 
-        Object[] params = {strUrl, _parameters};
-        AsyncTask<Object, Void, String> async = connect.execute(params);
+        Object[] params = {strUrl, _parameters, _transaction};
+        AsyncTask<Object, Void, Object> async = connect.execute(params);
         try {
         	String code = async.get().toString();
         	if(code.equals("200")) {
@@ -113,8 +116,12 @@ public class NetworkHelper {
 	 * @author james_r_bray
 	 *
 	 */
-	private class NetworkConnector extends AsyncTask<Object, Void, String> {
-
+	private class NetworkConnector extends AsyncTask<Object, Void, Object> {
+		
+		private String content;
+		private String status;
+		String data = "";
+		String error = null;
 		int responseCode = 0;
         String response = null;
 
@@ -127,82 +134,74 @@ public class NetworkHelper {
          * @return
          */
         @Override
-        protected String doInBackground(Object... params) {
-            String url = (String) params[0];
-            List<NameValuePair> valuePairs = (ArrayList<NameValuePair>) params[1];
-            int result = sendConnectionData(url, valuePairs);
-            Log.d("Results", "Response code is " + Integer.toString(responseCode));
-            return Integer.toString(result);
+        protected Object doInBackground(Object... params) {
+            String serverUrl = (String) params[0];
+            @SuppressWarnings("unchecked")
+			List<NameValuePair> valuePairs = (ArrayList<NameValuePair>) params[1];
+            //int result = sendConnectionData(url, valuePairs);
+            //Log.d("Results", "Response code is " + Integer.toString(responseCode));
+            
+            // BEGIN new code here
+            
+            /******* Make a Post Call to Web Server ******/
+            BufferedReader reader = null;
 
-        }
-
-        /**
-         * @param _serverUrl
-         * @return
-         */
-        public int sendConnectionData(String _serverUrl, List<NameValuePair> parameters) {
-            OutputStream out = null;
-            String queryString = null;
-
+            // Send data
             try {
-            	Log.d(TAG, "opening " + _serverUrl + getQuery(parameters));
-                URL url = new URL(_serverUrl + getQuery(parameters));
-                Log.d(TAG, url.getPath() + url.getQuery());
-                HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+                // Defined URL where to send data
+                URL url = new URL(serverUrl + getQuery(valuePairs));
 
+                // Send POST request data
+                URLConnection conn = url.openConnection();
+                conn.setDoOutput(true);
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write(data);
+                wr.flush();
 
-                httpConn.setRequestMethod("POST");
-                httpConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                httpConn.setDoInput(true);
-                httpConn.setDoOutput(true);
-                responseCode = httpConn.getResponseCode();
-                Log.d(TAG, "The response code on first try is " + responseCode);
-
-                out = httpConn.getOutputStream();
-                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, "UTF-8");
-                BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-                //queryString = getQuery(parameters);
-                //bufferedWriter.write(queryString);
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                httpConn.connect();
-                responseCode = httpConn.getResponseCode();
-                Log.d(TAG, "The response code on second try is " + responseCode);
-                BufferedReader reader = null;
-                // read the output from the server
-                reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
-                StringBuilder stringBuilder = new StringBuilder();
-           
+                // Get the server response
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder sb = new StringBuilder();
                 String line = null;
-                while ((line = reader.readLine()) != null)
-                {
-                  stringBuilder.append(line + "\n");
+
+                // Read server response
+                while((line = reader.readLine()) != null) {
+                    // Append server response string
+                    sb.append(line + " ");
                 }
-                Log.d(TAG, "URL " + stringBuilder.toString());
-                Log.d(TAG, "The url path is " + httpConn.getURL().getPath());
-                Log.d(TAG, "The query is " + httpConn.getURL().getQuery());
-                Log.d(TAG, Integer.toString(responseCode));
-                // this.response = streamToString(httpConn.getInputStream());
-                // Log.d("Response Text", response);
-                //Log.d("Response code", Integer.toString(responseCode));
-            } catch (MalformedURLException mue) {
-                Log.e("MalformedURLException Error", "" + mue.getMessage());
-            } catch (IOException ioe) {
-                Log.e("IOException Error", ioe.getMessage());
+
+                // Append server response to content string
+                content = sb.toString();
+                
+                // determine which action to take based on transaction type
+                if(params.length > 2) {
+                	String transaction = (String) params[2];
+                	if(transaction.equals(MyBookingsFragment.TRANSACTION)) {
+                		readBookingsJsonData();
+                	}
+                } else {
+                	readJsonData();
+                }
+                Log.d("Results", "Response code is " + Integer.toString(responseCode));
+
+            } catch(MalformedURLException mue) {
+                Log.e(TAG, mue.getMessage());
+            } catch(IOException ioe) {
+                Log.e(TAG, ioe.getMessage());
             } finally {
-                if (out != null) {
-                    try {
-                        out.close();
-                    } catch (IOException ioe) {
-                        Log.e("Error", "Closing input stream: " + ioe.getMessage());
-                    }
+                try
+                {
+                    reader.close();
+                } catch(IOException ioe) {
+                    // do nothing here
                 }
             }
             
-            Log.d("POST URL", _serverUrl + queryString);
-            //return "Response code is " + Integer.toString(responseCode);
-            return responseCode;
+            // END
+            
+            return status;
+
         }
+
         
         /**
          * Build query string for HTTP Post
@@ -228,6 +227,143 @@ public class NetworkHelper {
             }
             Log.d(TAG, "Query String:  " + result.toString());
             return result.toString();
+        }
+        
+        /**
+         * 
+         */
+        protected void readJsonData() {
+        	Log.d(TAG, "Entering readJsonData()...");
+            // Close dialog
+            //dialog.dismiss();
+
+            if(error != null) {
+                Log.w(TAG, "Output : " + error);
+            } else {
+                // Show response json on screen
+                Log.d(TAG,content);
+
+                /****** Start parse response data ******/
+                String outputData = "";
+                JSONObject jsonResponse;
+
+                try {
+                    /****** Creates a new JSONObject with name/value mappings from JSON string *****/
+                    jsonResponse = new JSONObject(content);
+
+                    /****** Returns the value mapped by name if it exists and is a JSONArray ******/
+                    /****** returns null otherwise ******/
+                    //JSONArray jsonMainNode = jsonResponse.optJSONArray("Android");
+
+                    //JSONObject jsonBookingStatusNode = jsonResponse.optJSONObject("status");
+                    status = jsonResponse.optString("status");
+                    outputData = status;
+                    String statusMessage = jsonResponse.optString("status_message");
+                    outputData = "Status: " + status + ",/n Status Message: " + statusMessage;
+                    String arrayString = jsonResponse.optString("data");
+                    JSONArray jsonBookingDataNode = new JSONArray(arrayString);
+
+                    /****** Process each JSON Node ******/
+                    int lengthJsonArr = jsonBookingDataNode.length();
+
+                    StringBuilder sb2 = new StringBuilder();
+                    User user = User.getInstance();
+                    for(int i = 0; i < lengthJsonArr ; i++) {
+                        JSONObject jsonChildNode = jsonBookingDataNode.getJSONObject(i);
+                        String id = jsonChildNode.optString("id");
+                        String username = jsonChildNode.optString("username");
+                        String firstname = jsonChildNode.optString("firstname");
+                        String lastname = jsonChildNode.optString("lastname");
+                        
+                        user.setUserId(Integer.parseInt(id));
+                        user.setUsername(username);
+                        user.setFirstname(firstname);
+                        user.setLastname(lastname);
+
+                        sb2.append("/n");
+                        sb2.append("id: " + id);
+                        sb2.append("/n");
+                        sb2.append("username: " + username);
+                        sb2.append("/n");
+                        sb2.append("firstname: " + firstname);
+                        sb2.append("/n");
+                        sb2.append("lastname: " + lastname);
+                        sb2.append("/n");
+                    }
+
+                    outputData = outputData + sb2.toString();
+                    Log.d(TAG, outputData);
+                } catch(JSONException je) {
+                    Log.e(TAG, je.getMessage());
+                }
+            }
+            Log.d(TAG, "Exiting readJsonData()...");
+        }
+        
+        /**
+         * 
+         */
+        protected void readBookingsJsonData() {
+        	Log.d(TAG, "Entering readJsonData(JsonReader)...");
+            // Close dialog
+            //dialog.dismiss();
+        	List<Booking> bookings = new ArrayList<Booking>();
+
+            if(error != null) {
+                Log.w(TAG, "Output : " + error);
+            } else {
+                // Show response json on screen
+                Log.d(TAG,content);
+
+                /****** Start parse response data ******/
+                String outputData = "";
+                JSONObject jsonResponse;
+
+                try {
+                    /****** Creates a new JSONObject with name/value mappings from JSON string *****/
+                    jsonResponse = new JSONObject(content);
+
+                    /****** Returns the value mapped by name if it exists and is a JSONArray ******/
+                    /****** returns null otherwise ******/
+                    //JSONArray jsonMainNode = jsonResponse.optJSONArray("Android");
+
+                    //JSONObject jsonBookingStatusNode = jsonResponse.optJSONObject("status");
+                    status = jsonResponse.optString("status");
+                    outputData = status;
+                    String statusMessage = jsonResponse.optString("status_message");
+                    outputData = "Status: " + status + ",/n Status Message: " + statusMessage;
+                    String arrayString = jsonResponse.optString("data");
+                    JSONArray jsonBookingDataNode = new JSONArray(arrayString);
+
+                    /****** Process each JSON Node ******/
+                    int lengthJsonArr = jsonBookingDataNode.length();
+
+                    StringBuilder sb2 = new StringBuilder();
+                    User user = User.getInstance();
+                    for(int i = 0; i < lengthJsonArr ; i++) {
+                        JSONObject jsonChildNode = jsonBookingDataNode.getJSONObject(i);
+                        String id = jsonChildNode.optString("soccer_id");
+                        String location = jsonChildNode.optString("location");
+                        String name = jsonChildNode.optString("name");
+                        String timeslot = jsonChildNode.optString("timeslot");
+                        int duration = jsonChildNode.optInt("duration");
+                        
+                        Booking booking = new Booking();
+                        booking.setBookingTime(timeslot);
+                        booking.setSoccerFieldName(name);
+                        booking.setDuration(duration);
+                        
+                        bookings.add(booking);
+                    }
+                    
+                    user.setMyBookings(bookings);
+                    outputData = outputData + sb2.toString();
+                    Log.d(TAG, outputData);
+                } catch(JSONException je) {
+                    Log.e(TAG, je.getMessage());
+                }
+            }
+            Log.d(TAG, "Exiting readJsonData(JsonReader)...");
         }
 
         public int getResponseCode() {
