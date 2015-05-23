@@ -92,8 +92,8 @@ public class RegisterFragment extends Fragment {
 	 * @param _nameValuePairs
 	 * @return
 	 */
-	private boolean register(List<NameValuePair> _nameValuePairs) {
-		boolean result = true;
+	private Object register(List<NameValuePair> _nameValuePairs) {
+		Object result = new Object();
 		networkHelper = new NetworkHelper();
 		result = networkHelper.sendData(_nameValuePairs, TRANSACTION);
 		return result;

@@ -24,9 +24,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.fut5.BookingFragment;
+import com.fut5.FieldSelectionDialogFragment;
 import com.fut5.MyBookingsFragment;
 import com.fut5.RegisterFragment;
 import com.fut5.model.Booking;
+import com.fut5.model.SoccerField;
 import com.fut5.model.User;
 //import org.apache.http.message.BasicNameValuePair;
 
@@ -66,7 +68,9 @@ public class NetworkHelper {
         Object[] params = {strUrl, parameters};
         AsyncTask<Object, Void, Object> async = connect.execute(params);
         try {
-        	String code = async.get().toString();
+        	List<Object> rawResults = (ArrayList<Object>)async.get();
+        	String code = (String)rawResults.get(0);
+        	Log.d(TAG, "Code is " + code);
         	if(code.equals("200")) {
         		result = true;
         	}
@@ -79,9 +83,25 @@ public class NetworkHelper {
         return result;
     }
 	
-	public boolean sendData(List<NameValuePair> _parameters, String _transaction) {
+	/**
+	 * <p>
+	 * Map each request to the proper service endpoint.  The endpoints include the following:
+	 * </p>
+	 * <ul>
+	 * <li>Book Soccer Field 	- book-soccer.php</li>
+	 * <li>Register				- register.php</li>
+	 * <li>Get User Bookings	- my-bookings.php</li>
+	 * <li>Get Soccer Fields	- getSoccerFields.php</li>
+	 * </ul>
+	 * @param _parameters
+	 * @param _transaction
+	 * @return Object
+	 */
+	public Object sendData(List<NameValuePair> _parameters, String _transaction) {
 		connect = new NetworkConnector();
-        boolean result = false;
+		String code;
+		ArrayList<Object> mResult;
+        //boolean result = false;
         String strUrl = SERVER_URL;
         
         if(_transaction.equals(BookingFragment.TRANSACTION)) {
@@ -93,14 +113,23 @@ public class NetworkHelper {
         if(_transaction.equals(MyBookingsFragment.TRANSACTION)) {
         	strUrl = strUrl + "/my-bookings.php";  // can change this to /getMyBookings.php
         }
+        if(_transaction.equals(FieldSelectionDialogFragment.TRANSACTION)) {
+        	strUrl = strUrl + "/getSoccerFields.php";
+        }
 
 
         Object[] params = {strUrl, _parameters, _transaction};
         AsyncTask<Object, Void, Object> async = connect.execute(params);
         try {
-        	String code = async.get().toString();
+        	mResult = (ArrayList<Object>)async.get();
+        	// the status code will always be the first element of the list
+        	code = (String)mResult.get(0);
         	if(code.equals("200")) {
-        		result = true;
+        		//result = true;
+        	}
+        	// check to see if there is more than the status code in the list
+        	if(mResult.size() > 1) {
+        		
         	}
             Log.d(TAG, async.get().toString());
         } catch (Exception e) {
@@ -108,7 +137,7 @@ public class NetworkHelper {
             return false;
         }
 
-        return result;
+        return mResult;
 	}
 	
 	/**
@@ -138,6 +167,7 @@ public class NetworkHelper {
             String serverUrl = (String) params[0];
             @SuppressWarnings("unchecked")
 			List<NameValuePair> valuePairs = (ArrayList<NameValuePair>) params[1];
+            List<Object> result = new ArrayList<Object>();
             //int result = sendConnectionData(url, valuePairs);
             //Log.d("Results", "Response code is " + Integer.toString(responseCode));
             
@@ -177,9 +207,16 @@ public class NetworkHelper {
                 	String transaction = (String) params[2];
                 	if(transaction.equals(MyBookingsFragment.TRANSACTION)) {
                 		readBookingsJsonData();
+                		result.add(status);
+                	}
+                	if(transaction.equals(FieldSelectionDialogFragment.TRANSACTION)) {
+                		Object soccerData = readSoccerFieldJsonData();
+                		result.add(status);
+                		result.add(soccerData);
                 	}
                 } else {
                 	readJsonData();
+                	result.add(status);
                 }
                 Log.d("Results", "Response code is " + Integer.toString(responseCode));
 
@@ -198,7 +235,7 @@ public class NetworkHelper {
             
             // END
             
-            return status;
+            return result;
 
         }
 
@@ -364,6 +401,72 @@ public class NetworkHelper {
                 }
             }
             Log.d(TAG, "Exiting readJsonData(JsonReader)...");
+        }
+        
+        protected Object readSoccerFieldJsonData() {
+        	Log.d(TAG, "Entering readJsonData(JsonReader)...");
+            // Close dialog
+            //dialog.dismiss();
+        	List<SoccerField> soccerFields = new ArrayList<SoccerField>();
+
+            if(error != null) {
+                Log.w(TAG, "Output : " + error);
+            } else {
+                // Show response json on screen
+                Log.d(TAG,content);
+
+                /****** Start parse response data ******/
+                String outputData = "";
+                JSONObject jsonResponse;
+
+                try {
+                    /****** Creates a new JSONObject with name/value mappings from JSON string *****/
+                    jsonResponse = new JSONObject(content);
+
+                    /****** Returns the value mapped by name if it exists and is a JSONArray ******/
+                    /****** returns null otherwise ******/
+                    //JSONArray jsonMainNode = jsonResponse.optJSONArray("Android");
+
+                    //JSONObject jsonBookingStatusNode = jsonResponse.optJSONObject("status");
+                    status = jsonResponse.optString("status");
+                    outputData = status;
+                    String statusMessage = jsonResponse.optString("status_message");
+                    outputData = "Status: " + status + ",/n Status Message: " + statusMessage;
+                    String arrayString = jsonResponse.optString("data");
+                    JSONArray jsonBookingDataNode = new JSONArray(arrayString);
+
+                    /****** Process each JSON Node ******/
+                    int lengthJsonArr = jsonBookingDataNode.length();
+
+                    StringBuilder sb2 = new StringBuilder();
+                    //User user = User.getInstance();
+                    for(int i = 0; i < lengthJsonArr ; i++) {
+                        JSONObject jsonChildNode = jsonBookingDataNode.getJSONObject(i);
+                        String id = jsonChildNode.optString("id");
+                        String location = jsonChildNode.optString("location");
+                        String name = jsonChildNode.optString("name");
+                        String size = jsonChildNode.optString("size");
+                        String type = jsonChildNode.optString("type");
+                        
+                        SoccerField field = new SoccerField();
+                        field.setId(Integer.parseInt(id));
+                        field.setLocation(location);
+                        field.setSize(size);
+                        field.setName(name);
+                        field.setType(type);
+                        
+                        soccerFields.add(field);
+                    }
+                    
+                    //user.setMyBookings(bookings);
+                    outputData = outputData + sb2.toString();
+                    Log.d(TAG, outputData);
+                } catch(JSONException je) {
+                    Log.e(TAG, je.getMessage());
+                }
+            }
+            Log.d(TAG, "Exiting readJsonData(JsonReader)...");
+            return soccerFields;
         }
 
         public int getResponseCode() {
