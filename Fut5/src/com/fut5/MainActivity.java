@@ -2,6 +2,7 @@ package com.fut5;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -14,6 +15,9 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.fut5.model.Booking;
+import com.fut5.model.User;
+
 
 public class MainActivity extends Activity implements LoginFragment.OnLoginButtonClickedListener, CoreBookingFragment.BookingAppCallbackListener {
 	
@@ -22,6 +26,13 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
 	private String[] mNavigationArray;
 	private ListView mNavigationList;
 	private FragmentManager fragmentManager;
+	private User user;
+	
+	/**
+	 * List of bookings the user currently has
+	 */
+	private List<Booking> myBookings;
+	
 	Fragment loginFragment;
 	Fragment bookingFragment;
 	Fragment myBookingsFragment;
@@ -56,7 +67,7 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
             	fragmentManager.beginTransaction().add(R.id.fragmentContainer,loginFragment).commit();
             }
     	} else {
-    		myBookingsFragment = new BookingFragment();
+    		myBookingsFragment = new BookingFragment(user);
     		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, myBookingsFragment).commit();
     		setTitle(getResources().getString(R.string.action_bookings));
     	}
@@ -125,9 +136,12 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
 		if(fragmentManager == null) {
 			fragmentManager = getFragmentManager();
 		}
+		if(user == null) {
+			user = User.getInstance();
+		}
 		loggedin = true;
 		bookingFragment = fragmentManager.findFragmentById(R.id.booking_fragment);
-		bookingFragment = new BookingFragment();
+		bookingFragment = new BookingFragment(user);
 		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, bookingFragment).commit();
 	}
 
@@ -143,7 +157,7 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
 			fragmentManager = getFragmentManager();
 		}
 		
-		myBookingsFragment = new MyBookingsFragment();
+		myBookingsFragment = new MyBookingsFragment(user);
 		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, myBookingsFragment).commit();
 		setTitle(getResources().getString(R.string.action_my_bookings));
 	}
@@ -156,7 +170,7 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
 			fragmentManager = getFragmentManager();
 		}
 		
-		myBookingsFragment = new BookingFragment();
+		myBookingsFragment = new BookingFragment(user);
 		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, myBookingsFragment).commit();
 		setTitle(getResources().getString(R.string.action_bookings));
 	}
