@@ -164,7 +164,7 @@ public class BookingFragment extends CoreBookingFragment implements FieldSelecti
     }
     
     public void openBookingDialog(Booking _booking) {
-    	DialogFragment dmBookingTimeSelection = new TimeSelectionDialogFragment(_booking);
+    	DialogFragment dmBookingTimeSelection = new TimeSelectionDialogFragment(_booking, mSelectedSoccerField);
     	dmBookingTimeSelection.show(getFragmentManager(), getResources().getString(R.string.booking_select_duration));
     	
     }
@@ -191,8 +191,9 @@ public class BookingFragment extends CoreBookingFragment implements FieldSelecti
 	}
 
 	@Override
-	public String getSoccerFieldName(String name) {
-		mSoccerFieldName = name;
+	public String getSelectedSoccerField(SoccerField field) {
+		mSelectedSoccerField = field;
+		mSoccerFieldName = field.getName();
 		mFieldSelectButton.setText(mSoccerFieldName);
 		return mSoccerFieldName;
 	}

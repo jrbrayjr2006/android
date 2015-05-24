@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.fut5.helper.NetworkHelper;
 import com.fut5.model.Booking;
+import com.fut5.model.SoccerField;
+import com.fut5.model.User;
 
 
 /**
@@ -41,17 +43,21 @@ public class TimeSelectionDialogFragment extends DialogFragment {
 	Booking mBooking;
 	List<NameValuePair> nameValuePairs;
 	NetworkHelper networkHelper;
+	User user;
+	SoccerField mSelectedField;
 	
 	String mBookingInfoMessage;
 	
-	public TimeSelectionDialogFragment(Booking _booking){
+	public TimeSelectionDialogFragment(Booking _booking, SoccerField _field){
 		super();
 		mBooking = _booking;
+		mSelectedField = _field;
 	}
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		user = User.getInstance();
 		builder.setTitle(getResources().getString(R.string.booking_select_duration));
 		builder.setItems(getResources().getStringArray(R.array.booking_times), new DialogInterface.OnClickListener() {
 			
@@ -88,6 +94,9 @@ public class TimeSelectionDialogFragment extends DialogFragment {
 	
 	/**
 	 * Use the network helper to record the booking
+	 * <p>
+	 * Get the user id from the singleton User object
+	 * </p>
 	 */
 	private boolean saveSelectedTimeInBookingEngine(Booking _booking) {
 		nameValuePairs = new ArrayList<NameValuePair>();
@@ -97,6 +106,8 @@ public class TimeSelectionDialogFragment extends DialogFragment {
     	nameValuePairs.add(new BasicNameValuePair("timeslot", mBooking.getBookingTime()));
     	nameValuePairs.add(new BasicNameValuePair("datetime", mBooking.getDateTime().toString()));
     	nameValuePairs.add(new BasicNameValuePair("duration", Integer.toString(_booking.getDuration())));
+    	nameValuePairs.add(new BasicNameValuePair("userId", Integer.toString(user.getUserId())));
+    	nameValuePairs.add(new BasicNameValuePair("soccerId", Integer.toString(mSelectedField.getId())));
     	networkHelper.sendData(nameValuePairs, TRANSACTION);
     	String message = "Booked " + _booking.getDuration() + " hour(s) at " + _booking.getBookingTime();
     	Log.d(TAG, message);

@@ -40,7 +40,7 @@ public class FieldSelectionDialogFragment extends DialogFragment {
 	private List<NameValuePair> nameValuePairs;
 	
 	public interface SoccerFieldDialogCallbackInterface {
-		public String getSoccerFieldName(String name);
+		public String getSelectedSoccerField(SoccerField field);
 	}
 
 	public FieldSelectionDialogFragment() {
@@ -71,9 +71,9 @@ public class FieldSelectionDialogFragment extends DialogFragment {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-				String selectedFieldName = fields.get(which).getName();
-				Log.i(TAG, "Selected field is " + selectedFieldName);
-				((SoccerFieldDialogCallbackInterface)getTargetFragment()).getSoccerFieldName(selectedFieldName);
+				SoccerField selectedField = fields.get(which);
+				Log.i(TAG, "Selected field is " + selectedField.getName());
+				((SoccerFieldDialogCallbackInterface)getTargetFragment()).getSelectedSoccerField(selectedField);
 			}});
 		return builder.create();
 	}
