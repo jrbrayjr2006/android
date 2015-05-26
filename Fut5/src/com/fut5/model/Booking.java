@@ -14,6 +14,8 @@ public class Booking {
 	protected final static String TAG = "Booking";
 	
 	int userId;  // Not sure if I will need this
+	int bookingTimeId;
+	int soccerFieldId;
 	String bookingTime;
 	Date dateTime;
 	boolean available;
@@ -65,6 +67,30 @@ public class Booking {
 
 	public void setSoccerFieldName(String soccerFieldName) {
 		this.soccerFieldName = soccerFieldName;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public int getBookingTimeId() {
+		return bookingTimeId;
+	}
+
+	public void setBookingTimeId(int bookingTimeId) {
+		this.bookingTimeId = bookingTimeId;
+	}
+
+	public int getSoccerFieldId() {
+		return soccerFieldId;
+	}
+
+	public void setSoccerFieldId(int soccerFieldId) {
+		this.soccerFieldId = soccerFieldId;
 	}
 
 }

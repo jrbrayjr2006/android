@@ -10,6 +10,10 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +31,7 @@ import com.fut5.model.User;
  * @author james_r_bray
  *
  */
-public class MyBookingsFragment extends CoreBookingFragment {
+public class MyBookingsFragment extends CoreBookingFragment implements MyBookingsListAdapter.OnCancelBookingCallbackListener {
 	
 	private static final String TAG = "MyBookingsFragment";
 	public static final String TRANSACTION = "my-bookings";
@@ -39,6 +43,7 @@ public class MyBookingsFragment extends CoreBookingFragment {
 	private List<NameValuePair> nameValuePairs;
 	private NetworkHelper networkHelper;
 	private User user;
+	private Activity mActivity;
 	
 	public MyBookingsFragment(User _user) {
 		this.user = _user;
@@ -64,10 +69,16 @@ public class MyBookingsFragment extends CoreBookingFragment {
 			Log.d(TAG, "No bookings retrieved so make message visible");
 			mMyBookingsMessageTextView.setVisibility(View.VISIBLE);
 		}
-		mBookingListAdapter = new MyBookingsListAdapter(getActivity(), mBookingArray);
+		mBookingListAdapter = new MyBookingsListAdapter(mActivity, mBookingArray);
 		mMyBookingsListView = (ListView)v.findViewById(R.id.myBookingsListView);
 		mMyBookingsListView.setAdapter(mBookingListAdapter);
 		return v;
+	}
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		this.mActivity = activity;
 	}
 	
 	/**
@@ -84,7 +95,7 @@ public class MyBookingsFragment extends CoreBookingFragment {
 		mybooking1.setBookingTime("2:00 PM");
 		mybooking1.setDateTime(new Date());
 		mybooking1.setDuration(2);
-		//TODO use NetworkHelper to get data for listing
+		//use NetworkHelper to get data for listing
 		networkHelper = new NetworkHelper();
 		mBookings.add(mybooking1);
 		
@@ -92,17 +103,33 @@ public class MyBookingsFragment extends CoreBookingFragment {
 		return mBookings;
 	}
 	
+	/**
+	 * Get the bookings for the user and put them into Booking objects in a List
+	 * 
+	 * @param _nameValuePairs
+	 * @return
+	 */
 	private List<Booking> retrieveMyBookings(List<NameValuePair> _nameValuePairs) {
 		Log.d(TAG, "Entering retrieveMyBookings(List<NameValuePair>)");
 		List<Booking> mBookings = new ArrayList<Booking>();
 		networkHelper = new NetworkHelper();
 		networkHelper.sendData(_nameValuePairs, TRANSACTION);
 		
-		//TODO populate return values with bookings
 		mBookings = user.getMyBookings();
 		
 		Log.d(TAG, "Exiting retrieveMyBookings(List<NameValuePair>)");
 		return mBookings;
+	}
+
+	@Override
+	public void refreshMyBookings() {
+		Activity _activity = getActivity();
+		FragmentManager fm = mActivity.getFragmentManager();
+		Fragment currentFragment = fm.findFragmentByTag(MainActivity.MY_BOOKINGS_FRAGMENT_TAG);
+		final FragmentTransaction ft = fm.beginTransaction();
+		ft.detach(currentFragment);
+		ft.attach(currentFragment);
+		ft.commit();
 	}
 
 }

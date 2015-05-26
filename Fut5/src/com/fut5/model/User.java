@@ -16,6 +16,7 @@ public class User {
 	private String firstname;
 	private String lastname;
 	private List<Booking> myBookings;
+	private SoccerField currentSoccerField;
 	private static User user;
 
 	/**
@@ -70,6 +71,14 @@ public class User {
 
 	public void setMyBookings(List<Booking> myBookings) {
 		this.myBookings = myBookings;
+	}
+
+	public SoccerField getCurrentSoccerField() {
+		return currentSoccerField;
+	}
+
+	public void setCurrentSoccerField(SoccerField currentSoccerField) {
+		this.currentSoccerField = currentSoccerField;
 	}
 	
 

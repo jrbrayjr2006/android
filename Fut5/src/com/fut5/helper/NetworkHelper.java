@@ -5,6 +5,7 @@ package com.fut5.helper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -27,6 +28,7 @@ import com.fut5.BookingFragment;
 import com.fut5.FieldSelectionDialogFragment;
 import com.fut5.MyBookingsFragment;
 import com.fut5.RegisterFragment;
+import com.fut5.adapter.MyBookingsListAdapter;
 import com.fut5.model.Booking;
 import com.fut5.model.SoccerField;
 import com.fut5.model.User;
@@ -111,10 +113,13 @@ public class NetworkHelper {
         	strUrl = strUrl + "/register.php";
         }
         if(_transaction.equals(MyBookingsFragment.TRANSACTION)) {
-        	strUrl = strUrl + "/my-bookings.php";  // can change this to /getMyBookings.php
+        	strUrl = strUrl + "/getMyBookings.php";  // can change this to /getMyBookings.php
         }
         if(_transaction.equals(FieldSelectionDialogFragment.TRANSACTION)) {
         	strUrl = strUrl + "/getSoccerFields.php";
+        }
+        if(_transaction.equals(MyBookingsListAdapter.TRANSACTION)) {
+        	strUrl = strUrl + "/deleteBooking.php";
         }
 
 
@@ -152,7 +157,7 @@ public class NetworkHelper {
 		String data = "";
 		String error = null;
 		int responseCode = 0;
-        String response = null;
+        //String response = null;
 
         /**
          * <pre>
@@ -164,12 +169,13 @@ public class NetworkHelper {
          */
         @Override
         protected Object doInBackground(Object... params) {
+        	Log.d(TAG, "Entering doInBackground(Object...)...");
             String serverUrl = (String) params[0];
             @SuppressWarnings("unchecked")
 			List<NameValuePair> valuePairs = (ArrayList<NameValuePair>) params[1];
             List<Object> result = new ArrayList<Object>();
             //int result = sendConnectionData(url, valuePairs);
-            //Log.d("Results", "Response code is " + Integer.toString(responseCode));
+            //Log.d(TAG, "");
             
             // BEGIN new code here
             
@@ -183,15 +189,28 @@ public class NetworkHelper {
 
                 // Send POST request data
                 URLConnection conn = url.openConnection();
+                Log.d(TAG, "Step 1");
                 conn.setDoOutput(true);
+                Log.d(TAG, "Step 2");
                 OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                Log.d(TAG, "Step 3");
                 wr.write(data);
+                Log.d(TAG, "Step 4");
                 wr.flush();
-
-                // Get the server response
-                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                Log.d(TAG, "Step 5");
+                
                 StringBuilder sb = new StringBuilder();
+                // Get the server response
+                // This section throws an error after a record is deleted
+
+            	InputStream in = conn.getInputStream();
+            	InputStreamReader inReader = new InputStreamReader(in);
+            	reader = new BufferedReader(inReader);
+
+                Log.d(TAG, "Step 6");
+                
                 String line = null;
+                Log.d(TAG, "Made connection and got output...");
 
                 // Read server response
                 while((line = reader.readLine()) != null) {
@@ -213,6 +232,8 @@ public class NetworkHelper {
                 		Object soccerData = readSoccerFieldJsonData();
                 		result.add(status);
                 		result.add(soccerData);
+                	}if(transaction.equals(MyBookingsListAdapter.TRANSACTION)) {
+                		result.add(status);
                 	}
                 } else {
                 	readJsonData();
@@ -227,14 +248,16 @@ public class NetworkHelper {
             } finally {
                 try
                 {
-                    reader.close();
+                	if(reader != null) {
+                		reader.close();
+                	}
                 } catch(IOException ioe) {
                     // do nothing here
                 }
             }
             
             // END
-            
+            Log.d(TAG, "Exiting doInBackground(Object...)...");
             return result;
 
         }
@@ -379,13 +402,19 @@ public class NetworkHelper {
                     User user = User.getInstance();
                     for(int i = 0; i < lengthJsonArr ; i++) {
                         JSONObject jsonChildNode = jsonBookingDataNode.getJSONObject(i);
-                        String id = jsonChildNode.optString("soccer_id");
-                        String location = jsonChildNode.optString("location");
+                        //String id = jsonChildNode.optString("soccer_id");
+                        //String location = jsonChildNode.optString("location");
                         String name = jsonChildNode.optString("name");
                         String timeslot = jsonChildNode.optString("timeslot");
                         int duration = jsonChildNode.optInt("duration");
+                        int bookingTimeId = jsonChildNode.optInt("booking_time_id");
+                        int soccerFieldId = jsonChildNode.optInt("soccer_id");
+                        int userId = jsonChildNode.optInt("user_id");
                         
                         Booking booking = new Booking();
+                        booking.setBookingTimeId(bookingTimeId);
+                        booking.setSoccerFieldId(soccerFieldId);
+                        booking.setUserId(userId);
                         booking.setBookingTime(timeslot);
                         booking.setSoccerFieldName(name);
                         booking.setDuration(duration);
@@ -393,6 +422,7 @@ public class NetworkHelper {
                         bookings.add(booking);
                     }
                     
+                    // the code breaks the pattern used in the app of returning the data; probably should re-factor this
                     user.setMyBookings(bookings);
                     outputData = outputData + sb2.toString();
                     Log.d(TAG, outputData);
@@ -467,10 +497,6 @@ public class NetworkHelper {
             }
             Log.d(TAG, "Exiting readJsonData(JsonReader)...");
             return soccerFields;
-        }
-
-        public int getResponseCode() {
-            return responseCode;
         }
 		
 	}

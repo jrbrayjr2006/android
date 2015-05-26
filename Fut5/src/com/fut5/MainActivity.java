@@ -28,6 +28,8 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
 	private FragmentManager fragmentManager;
 	private User user;
 	
+	public static final String MY_BOOKINGS_FRAGMENT_TAG = "MY_BOOKINGS_FRAGMENT";
+	
 	/**
 	 * List of bookings the user currently has
 	 */
@@ -158,7 +160,7 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
 		}
 		
 		myBookingsFragment = new MyBookingsFragment(user);
-		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, myBookingsFragment).commit();
+		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, myBookingsFragment, MY_BOOKINGS_FRAGMENT_TAG).commit();
 		setTitle(getResources().getString(R.string.action_my_bookings));
 	}
 	
@@ -170,8 +172,8 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
 			fragmentManager = getFragmentManager();
 		}
 		
-		myBookingsFragment = new BookingFragment(user);
-		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, myBookingsFragment).commit();
+		bookingFragment = new BookingFragment(user);
+		fragmentManager.beginTransaction().replace(R.id.fragmentContainer, bookingFragment).commit();
 		setTitle(getResources().getString(R.string.action_bookings));
 	}
 	
