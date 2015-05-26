@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:imeOptions="actionNext"
         android:hint="@string/username" >
 
         <requestFocus />
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/password"
+        android:nextFocusDown="@+id/buttonLogin"
         android:inputType="textPassword" />
 
     <Button

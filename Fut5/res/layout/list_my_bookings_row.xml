@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/gameTimeValueTextView"
         android:layout_alignParentTop="true"
+        android:textColor="@color/white"
         android:text="@string/knockout_game_time"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -18,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/gameTimeLabelTextView1"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
     
@@ -27,6 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/gameTimeValueTextView"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 

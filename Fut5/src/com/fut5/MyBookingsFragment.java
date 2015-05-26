@@ -4,7 +4,6 @@
 package com.fut5;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -60,7 +59,7 @@ public class MyBookingsFragment extends CoreBookingFragment implements MyBooking
 		View v = inflater.inflate(R.layout.my_booking_fragment, parent, false);
 		
 		nameValuePairs = new ArrayList<NameValuePair>();
-		nameValuePairs.add(new BasicNameValuePair("userId", String.valueOf(user.getUserId()))); //TODO remove hard coded value after testing complete
+		nameValuePairs.add(new BasicNameValuePair("userId", String.valueOf(user.getUserId())));
 		//retrieveMyBookings();  // dummy list only
 		
 		mMyBookingsMessageTextView = (TextView)v.findViewById(R.id.myBookingsMessageTextView);
@@ -81,15 +80,15 @@ public class MyBookingsFragment extends CoreBookingFragment implements MyBooking
 		this.mActivity = activity;
 	}
 	
-	/**
+	/*
 	 * Get the bookings for the user and put them into Booking objects in an ArrayList
 	 * @return
-	 */
+	 *
 	private List<Booking> retrieveMyBookings() {
 		Log.d(TAG, "Entering retrieveMyBookings()");
 		List<Booking> mBookings = new ArrayList<Booking>();
 		
-		//TODO remove dummy bookings when complete
+		//dummy bookings
 		Booking mybooking1 = new Booking();
 		mybooking1.setAvailable(false);
 		mybooking1.setBookingTime("2:00 PM");
@@ -101,7 +100,7 @@ public class MyBookingsFragment extends CoreBookingFragment implements MyBooking
 		
 		Log.d(TAG, "Exiting retrieveMyBookings()");
 		return mBookings;
-	}
+	}*/
 	
 	/**
 	 * Get the bookings for the user and put them into Booking objects in a List
@@ -123,7 +122,6 @@ public class MyBookingsFragment extends CoreBookingFragment implements MyBooking
 
 	@Override
 	public void refreshMyBookings() {
-		Activity _activity = getActivity();
 		FragmentManager fm = mActivity.getFragmentManager();
 		Fragment currentFragment = fm.findFragmentByTag(MainActivity.MY_BOOKINGS_FRAGMENT_TAG);
 		final FragmentTransaction ft = fm.beginTransaction();
