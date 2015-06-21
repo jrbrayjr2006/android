@@ -22,7 +22,8 @@ import com.fut5.model.User;
 public class MainActivity extends Activity implements LoginFragment.OnLoginButtonClickedListener, CoreBookingFragment.BookingAppCallbackListener {
 	
 	private boolean loggedin = false;
-	private DrawerLayout mDrawerLayout;
+	private NavigationDrawerFragment mDrawerLayout;
+	private NavigationDrawerFragment mNavigationDrawerFragment;
 	private String[] mNavigationArray;
 	private ListView mNavigationList;
 	private FragmentManager fragmentManager;
@@ -45,7 +46,7 @@ public class MainActivity extends Activity implements LoginFragment.OnLoginButto
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        mDrawerLayout = (DrawerLayout)findViewById(R.layout.booking_drawer_fragment);
+        mDrawerLayout = (NavigationDrawerFragment)getFragmentManager().findFragmentById(R.id.drawer_layout);
         
         fragmentManager = getFragmentManager();
         loginFragment = fragmentManager.findFragmentById(R.id.login_fragment);

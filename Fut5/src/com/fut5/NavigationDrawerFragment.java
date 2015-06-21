@@ -11,6 +11,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class NavigationDrawerFragment extends Fragment {
@@ -40,6 +42,8 @@ public class NavigationDrawerFragment extends Fragment {
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+    
+    private String[] mNavigationTitles;
 	
 	
 	public static interface NavigationDrawerCallbacks {
@@ -62,9 +66,23 @@ public class NavigationDrawerFragment extends Fragment {
 	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
 		super.onCreateView(inflater, root, savedInstanceState);
-		View v = inflater.inflate(R.layout.booking_drawer_fragment, root, false);
+		//View v = inflater.inflate(R.layout.booking_drawer_fragment, root, false);
 		
-		return v;
+		mDrawerListView = (ListView)inflater.inflate(R.layout.booking_drawer_fragment, root, false);
+		mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectItem(position);
+            }
+        });
+		mNavigationTitles = getResources().getStringArray(R.array.navigation_items);
+		mDrawerListView.setAdapter(new ArrayAdapter<String>(
+                getActionBar().getThemedContext(),
+                android.R.layout.simple_list_item_activated_1,
+                android.R.id.text1,
+                mNavigationTitles));
+        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+		return mDrawerListView;
 	}
 	
 	/**
@@ -143,6 +161,19 @@ public class NavigationDrawerFragment extends Fragment {
     
     private ActionBar getActionBar() {
         return getActivity().getActionBar();
+    }
+    
+    private void selectItem(int position) {
+        mCurrentSelectedPosition = position;
+        if (mDrawerListView != null) {
+            mDrawerListView.setItemChecked(position, true);
+        }
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawer(mFragmentContainerView);
+        }
+        if (mCallbacks != null) {
+            //mCallbacks.onNavigationDrawerItemSelected(position);
+        }
     }
 
 }

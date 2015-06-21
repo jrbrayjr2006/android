@@ -48,5 +48,10 @@
         <item>Soccer Field 2</item>
         <item>Soccer Field 3</item>
     </string-array>
+    <string-array name="dummy_players">
+        <item>John Doe</item>
+        <item>Beckam</item>
+        <item>Teo</item>
+    </string-array>
 
 </resources>
